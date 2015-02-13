@@ -154,7 +154,7 @@
 
 ;; (message "Loading erlang mode...")
 ;; (setq load-path (cons  "/usr/local/lib/erlang/lib/tools-2.6.8/emacs"
-;; 		       load-path))
+;;                        load-path))
 ;; (setq erlang-root-dir "/usr/local/lib/erlang/")
 ;; (setq exec-path (cons "/usr/local/lib/erlang/bin" exec-path))
 ;; (require 'erlang-start)
@@ -165,7 +165,7 @@
 ;; (require 'two-mode-mode)
 ;; (or (assoc "\\.yaws$" auto-mode-alist)
 ;;     (setq auto-mode-alist (cons '("\\.yaws$" . two-mode-mode)
-;; 				auto-mode-alist)))
+;;                                 auto-mode-alist)))
 ;; ;;; Set up for automatic mode selection
 ;; (let ((a '("\\.erl$" . erlang-mode))
 
@@ -197,7 +197,7 @@
 (add-hook 'git-commit-mode-hook
           (lambda ()
             (set-variable 'show-trailing-whitespace nil)
-	    (set-variable 'fill-column              72)))
+            (set-variable 'fill-column              72)))
 
 (defun my-lisplike-hook ()
   (rainbow-delimiters-mode t))
@@ -379,6 +379,11 @@ Key bindings:
   (local-set-key (kbd "<C-tab>") 'semantic-complete-analyze-inline)
   ;; (local-set-key "\C-cp" 'semantic-analyze-proto-impl-toggle)
   )
+(add-hook 'c++-mode-hook 'my-cedet-hook)
+
+(add-hook 'haskell-mode-hook 'flymake-haskell-multi-load)
+
+(autoload 'javacc-mode "javacc-mode" nil t)
 
 ;; Stop C-x C-x from activating the mark
 (defun sane-exchange-point-and-mark (arg)
@@ -420,9 +425,9 @@ See also `exchange-point-and-mark'."
      ;; irony-mode's buffers by irony-mode's function
      (defun my-irony-mode-hook ()
        (define-key irony-mode-map [remap completion-at-point]
-	 'irony-completion-at-point-async)
+         'irony-completion-at-point-async)
        (define-key irony-mode-map [remap complete-symbol]
-	 'irony-completion-at-point-async))
+         'irony-completion-at-point-async))
      (add-hook 'irony-mode-hook 'my-irony-mode-hook)
      (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))
 
@@ -434,7 +439,7 @@ See also `exchange-point-and-mark'."
      (when (package-installed-p 'auto-complete-clang)
        (require 'auto-complete-clang)
        (add-hook 'c-mode-common-hook
-		 (lambda() (setq ac-sources (cons 'ac-source-clang ac-sources))))))
+                 (lambda() (setq ac-sources (cons 'ac-source-clang ac-sources))))))
 
    (when (package-installed-p 'jedi)
      (add-hook 'python-mode-hook 'jedi:setup)
