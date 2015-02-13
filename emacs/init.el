@@ -4,7 +4,8 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(TeX-PDF-mode t)
- '(adaptive-wrap-extra-indent 1)
+ '(adaptive-wrap-extra-indent 2)
+ '(align-to-tab-stop nil)
  '(ansi-color-faces-vector
    [default bold shadow italic underline bold bold-italic bold])
  '(ansi-color-names-vector
@@ -17,17 +18,33 @@
  '(custom-enabled-themes (quote (sanityinc-tomorrow-day)))
  '(custom-safe-themes
    (quote
-    ("bb08c73af94ee74453c90422485b29e5643b73b05e8de029a6909af6a3fb3f58" "1b8d67b43ff1723960eb5e0cba512a2c7a2ad544ddb2533a90101fd1852b426e" "06f0b439b62164c6f8f84fdda32b62fb50b6d00e8b01c2208e55543a6337433a" "70ef61cc7736345eb1d2d449a9251e683625ba977f53a4d7cdbd4b9e81425b5e" default)))
+    ("70ef61cc7736345eb1d2d449a9251e683625ba977f53a4d7cdbd4b9e81425b5e" "1b8d67b43ff1723960eb5e0cba512a2c7a2ad544ddb2533a90101fd1852b426e" "82d2cac368ccdec2fcc7573f24c3f79654b78bf133096f9b40c20d97ec1d8016" "bb08c73af94ee74453c90422485b29e5643b73b05e8de029a6909af6a3fb3f58" "628278136f88aa1a151bb2d6c8a86bf2b7631fbea5f0f76cba2a0079cd910f7d" "06f0b439b62164c6f8f84fdda32b62fb50b6d00e8b01c2208e55543a6337433a" default)))
  '(default-frame-alist (quote ((width . 96))))
+ '(display-time-24hr-format t)
  '(edts-api-async-node-init t)
  '(edts-code-inhibit-dialyzer-on-compile t)
  '(edts-man-root "/home/magnus/.emacs.d/edts/doc/17.1")
  '(erlang-root-dir "/usr/lib/erlang/" t)
+ '(face-font-family-alternatives
+   (quote
+    (("Impact" "Monospace" "courier" "fixed")
+     ("courier" "CMU Typewriter Text" "fixed")
+     ("Sans Serif" "helv" "helvetica" "arial" "fixed")
+     ("helv" "helvetica" "arial" "fixed"))))
  '(fci-rule-color "#424242")
  '(fill-column 80)
+ '(flycheck-clang-args
+   (quote
+    ("-std=c++11" "-Wall" "-DDEBUG" "-Wshorten-64-to-32")))
+ '(flymake-info-line-regexp "^\\([iI]nfo\\|[nN]ote\\)")
+ '(flymake-warning-re "^[wWvV]arning" t)
+ '(global-linum-mode t)
+ '(global-whitespace-mode nil)
+ '(haskell-mode-hook (quote (turn-on-haskell-indentation)) t)
  '(highlight-symbol-idle-delay 0.8)
  '(indent-tabs-mode nil)
  '(inhibit-startup-screen t)
+ '(irony-additional-clang-options (quote ("--std=c++11")))
  '(mouse-drag-copy-region nil)
  '(package-archives
    (quote
@@ -35,11 +52,15 @@
      ("marmalade" . "http://marmalade-repo.org/packages/")
      ("melpa" . "http://melpa.milkbox.net/packages/"))))
  '(safe-local-variable-values (quote ((erlang-include-dirs) (prolog-mode . t))))
+ '(semantic-complete-inline-analyzer-idle-displayor-class (quote semantic-displayor-tooltip))
  '(semantic-mode t)
  '(show-paren-mode t)
  '(show-trailing-whitespace nil)
+ '(speedbar-load-hook (quote (visual-line-mode)))
  '(tab-width 8)
  '(tool-bar-mode nil)
+ '(tool-bar-position (quote top))
+ '(transient-mark-mode (quote (only . t)))
  '(truncate-lines t)
  '(vc-annotate-background nil)
  '(vc-annotate-color-map
@@ -73,6 +94,9 @@
  '(default ((t (:family "DejaVu Sans Mono" :foundry "unknown" :slant normal :weight normal :height 90 :width normal))))
  '(edts-face-error-line ((t (:inherit flycheck-errline))))
  '(edts-face-warning-line ((t (:inherit flycheck-warnline))))
+ '(flymake-errline ((t (:underline (:color "OrangeRed" :style wave)))))
+ '(flymake-infoline ((t nil)))
+ '(flymake-warnline ((t (:underline (:color "goldenrod" :style wave)))))
  '(rainbow-delimiters-depth-1-face ((t nil)))
  '(rainbow-delimiters-depth-2-face ((t (:foreground "#7398f6"))))
  '(rainbow-delimiters-depth-3-face ((t nil)))
@@ -82,7 +106,7 @@
  '(rainbow-delimiters-depth-7-face ((t nil)))
  '(rainbow-delimiters-depth-8-face ((t (:foreground "#b286ef"))))
  '(rainbow-delimiters-depth-9-face ((t nil)))
- '(whitespace-tab ((t (:background "grey13" :foreground "grey22")))))
+ '(whitespace-tab ((t (:foreground "#484848")))))
 
 ;; This custom variable caused table headers to be too tall
 ;; '(face-font-family-alternatives (quote (("Impact" "Monospace" "courier" "fixed") ("courier" "CMU Typewriter Text" "fixed") ("Sans Serif" "helv" "helvetica" "arial" "fixed") ("helv" "helvetica" "arial" "fixed"))))
@@ -121,24 +145,71 @@
 ;; (add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
 ;; (load-theme 'sunburst t)
 
-(message "Loading linum-mode")
-(global-linum-mode t)
-
 (message "Loading package-mode")
 (package-initialize)
 
 (when (package-installed-p 'web-mode)
   (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode)))
+;; (add-to-list 'custom-theme-load-path "~/.emacs.d/elpa")
+
+;; (message "Loading erlang mode...")
+;; (setq load-path (cons  "/usr/local/lib/erlang/lib/tools-2.6.8/emacs"
+;; 		       load-path))
+;; (setq erlang-root-dir "/usr/local/lib/erlang/")
+;; (setq exec-path (cons "/usr/local/lib/erlang/bin" exec-path))
+;; (require 'erlang-start)
+
+;; (message "Loading yaws-mode...")
+;; (setq load-path (append ' ("~/.emacs.d/local") load-path ))
+;; (require 'nxml-mode)
+;; (require 'two-mode-mode)
+;; (or (assoc "\\.yaws$" auto-mode-alist)
+;;     (setq auto-mode-alist (cons '("\\.yaws$" . two-mode-mode)
+;; 				auto-mode-alist)))
+;; ;;; Set up for automatic mode selection
+;; (let ((a '("\\.erl$" . erlang-mode))
+
+;;       (b '("\\.hrl$" . erlang-mode)))
+;;   (or (assoc (car a) auto-mode-alist)
+;;       (setq auto-mode-alist (cons a auto-mode-alist)))
+
+;;   ;; (or (assoc (car c) auto-mode-alist)
+;;   ;;     (setq auto-mode-alist (cons c auto-mode-alist)))
+
+;;   (or (assoc (car b) auto-mode-alist)
+;;       (setq auto-mode-alist (cons b auto-mode-alist))))
+
+;; ;;; Autoload the Erlang mode when needed.
+;; (autoload 'erlang-mode "erlang" "Major mode for editing Erlang code." t)
+;; (autoload 'run-erlang "erlang" "Run an inferior Erlang shell." t)
+
+;; ;;; Files usually not interesting to view in Emacs.
+;; (setq completion-ignored-extensions
+;;       (append '(".jam" ".vee" ".beam") completion-ignored-extensions))
+
+;; ; Fontify my Erlang buffers
+;; ;;(setq font-lock-maximum-decoration t)
+;; (add-hook 'erlang-mode-hook 'turn-on-font-lock)
 
 (message "Loading...")
 
 (global-set-key (kbd "<f11>") 'scroll-lock-mode)
+(add-hook 'git-commit-mode-hook
+          (lambda ()
+            (set-variable 'show-trailing-whitespace nil)
+	    (set-variable 'fill-column              72)))
 
 (defun my-lisplike-hook ()
   (rainbow-delimiters-mode t))
 (add-hook 'lisp-mode-hook 'my-lisplike-hook)
 (add-hook 'emacs-lisp-mode-hook 'my-lisplike-hook)
 (add-hook 'racket-mode-hook 'my-lisplike-hook)
+;; Usage: emacs -diff file1 file2
+(defun command-line-diff (switch)
+  (let ((file1 (pop command-line-args-left))
+        (file2 (pop command-line-args-left)))
+    (ediff file1 file2)))
+(add-to-list 'command-switch-alist '("diff" . command-line-diff))
 
 (defun dont-highlight-crap-hook ()
   (set-variable 'show-trailing-whitespace nil))
@@ -146,6 +217,8 @@
 (add-hook 'git-commit-mode-hook (lambda () (auto-fill-mode)))
 (add-hook 'diff-mode-hook 'dont-highlight-crap-hook)
 (add-hook 'log-view-mode 'dont-highlight-crap-hook)
+(add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
+(add-to-list 'auto-mode-alist '("[/^]SConstruct\\'" . python-mode))
 
 (if (eq (getenv "GOPATH") nil)
     (setenv "GOPATH" "c:/users/magnus/go"))
@@ -192,8 +265,72 @@
 (add-hook 'LaTeX-mode-hook 'auto-fill-mode)
 
 (modify-coding-system-alist 'file "\\.nfo\\'" 'cp850)
+;; (load-file "/usr/share/emacs/24.3/lisp/cedet/cedet.elc")
+(require 'semantic)
+(require 'semantic/ia)
+(global-ede-mode 1)                      ; Enable the Project management system
 
-(global-set-key [(control z)] 'undo)
+;; flymake
+(defvar my-flymake-minor-mode-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map "\M-p" 'flymake-goto-prev-error)
+    (define-key map "\M-n" 'flymake-goto-next-error)
+    map)
+  "Keymap for my flymake minor mode.")
+
+(defun my-flymake-err-at (pos)
+  (let ((overlays (overlays-at pos)))
+    (remove nil
+            (mapcar (lambda (overlay)
+                      (and (overlay-get overlay 'flymake-overlay)
+                           (overlay-get overlay 'help-echo)))
+                    overlays))))
+
+(defun my-flymake-err-echo ()
+  (message "%s" (mapconcat 'identity (my-flymake-err-at (point)) "\n")))
+
+(defadvice flymake-goto-next-error (after display-message activate compile)
+  (my-flymake-err-echo))
+
+(defadvice flymake-goto-prev-error (after display-message activate compile)
+  (my-flymake-err-echo))
+
+(define-minor-mode my-flymake-minor-mode
+  "Simple minor mode which adds some key bindings for moving to the next and previous errors.
+
+Key bindings:
+
+\\{my-flymake-minor-mode-map}"
+  nil
+  nil
+  :keymap my-flymake-minor-mode-map)
+
+(defun my-c++-mode-hook ()
+  (setq show-trailing-whitespace t)
+  (local-set-key "\C-c\C-v" 'flymake-goto-next-error)
+  (setq flycheck-clang-args '("-std=c++11")))
+
+;; (add-to-list 'auto-mode-alist '("\\.\\(h\\|tcc\\)\\'" . c++-mode))
+;;(add-hook 'c++-mode-hook 'flymake-mode)
+;; (add-hook 'c++-mode-hook 'adaptive-wrap-prefix-mode)
+(add-hook 'c++-mode-hook 'flycheck-mode)
+(add-hook 'c++-mode-hook 'linum-mode)
+(add-hook 'c++-mode-hook 'semantic-mode)
+;; (add-hook 'c++-mode-hook 'irony-mode)
+(add-hook 'c++-mode-hook 'my-c++-mode-hook)
+;;(add-hook 'c++-mode-hook 'my-flymake-minor-mode)
+
+(defun my-c-mode-hook ()
+  (setq show-trailing-whitespace nil)
+  (setq indent-tabs-mode t)
+  ;;(whitespace-mode)
+  )
+(add-hook 'c++-mode-hook 'my-cedet-hook)
+
+(add-hook 'haskell-mode-hook 'flymake-haskell-multi-load)
+
+(autoload 'javacc-mode "javacc-mode" nil t)
+
 ;; (setq exec-path (cons "C:/Program Files/Git/bin/" exec-path))
 (when window-system
   (global-set-key (kbd "<C-wheel-down>") 'text-scale-decrease)
@@ -201,6 +338,46 @@
   ;;(require 'redo)
   ;; ;; (autoload 'redo "redo" "Script for performing redo." t)
   ;;(global-set-key [(control shift z)] 'redo)
+  )
+
+(add-hook 'c-mode-hook 'linum-mode)
+(add-hook 'c-mode-hook 'semantic-mode)
+(add-hook 'c-mode-hook 'my-c-mode-hook)
+
+;;(add-to-list 'semantic-default-submodes 'global-semantic-highlight-func-mode)
+(add-to-list 'semantic-default-submodes 'global-semantic-idle-local-symbol-highlight-mode)
+(add-to-list 'semantic-default-submodes 'global-semantic-idle-scheduler-mode)
+;;(add-to-list 'semantic-default-submodes 'global-semantic-idle-completions-mode)
+(add-to-list 'semantic-default-submodes 'global-semantic-idle-summary-mode)
+;;(add-to-list 'semantic-default-submodes 'global-semantic-stickyfunc-mode)
+(global-set-key (kbd "<f12>") 'semantic-ia-fast-jump)
+
+(add-hook 'flymake-mode-hook
+          (lambda ()
+            (defun flymake-erlang-init ()
+              (let* ((temp-file (flymake-init-create-temp-buffer-copy
+                                 'flymake-create-temp-inplace))
+                     (local-file (file-relative-name temp-file
+                                                     (file-name-directory buffer-file-name))))
+                (list "/home/magnus/erlang-syntax-check" (list local-file))))
+            
+            (add-to-list 'flymake-allowed-file-name-masks '("\\.erl\\'" flymake-erlang-init))))
+
+(if (not (getenv "GOPATH"))
+    (setenv "GOPATH" "/home/magnus/go"))
+(add-to-list 'exec-path (concat (getenv "GOPATH") "/bin"))
+(defun my-go-hook ()
+  (require 'flycheck)
+  (flycheck-select-checker 'go-gofmt)
+  (flycheck-mode 1))
+(add-hook 'go-mode-hook 'my-go-hook)
+
+(defun my-cedet-hook ()
+  ;; (semantic-load-enable-code-helpers)      ; Enable prototype help and smart completion
+  (local-set-key [(control return)] 'semantic-ia-complete-symbol)
+  ;; (local-set-key "\C-c?" 'semantic-ia-complete-symbol-menu)
+  (local-set-key (kbd "<C-tab>") 'semantic-complete-analyze-inline)
+  ;; (local-set-key "\C-cp" 'semantic-analyze-proto-impl-toggle)
   )
 
 ;; Stop C-x C-x from activating the mark
@@ -222,6 +399,8 @@ See also `exchange-point-and-mark'."
 (unless window-system
   (if (string= (getenv "TERM") "xterm-256color")
       (xterm-mouse-mode t)))
+(add-to-list 'auto-mode-alist '("\\.jj\\'"  . javacc-mode))
+(add-to-list 'auto-mode-alist '("\\.jjt\\'" . javacc-mode))
 
 (add-hook
  'after-init-hook
@@ -236,6 +415,42 @@ See also `exchange-point-and-mark'."
    ;;   (go-mode-indent-line . tab-width))
    ;; (smart-tabs-insinuate 'go)
    (smart-tabs-insinuate 'c)
+   (when (package-installed-p 'irony)
+     ;; replace the `completion-at-point' and `complete-symbol' bindings in
+     ;; irony-mode's buffers by irony-mode's function
+     (defun my-irony-mode-hook ()
+       (define-key irony-mode-map [remap completion-at-point]
+	 'irony-completion-at-point-async)
+       (define-key irony-mode-map [remap complete-symbol]
+	 'irony-completion-at-point-async))
+     (add-hook 'irony-mode-hook 'my-irony-mode-hook)
+     (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))
+
+   (when (package-installed-p 'auto-complete)
+     (message "Loading Auto-Complete...")
+     (setq ac-dictionary-directories '("~/.emacs.d/ac-dict"))
+     (require 'auto-complete-config)
+     (ac-config-default)
+     (when (package-installed-p 'auto-complete-clang)
+       (require 'auto-complete-clang)
+       (add-hook 'c-mode-common-hook
+		 (lambda() (setq ac-sources (cons 'ac-source-clang ac-sources))))))
+
+   (when (package-installed-p 'jedi)
+     (add-hook 'python-mode-hook 'jedi:setup)
+     (setq jedi:complete-on-dot t))
+   
+   (when window-system
+     ;; (add-to-list 'default-frame-alist '(background-color . "black"))
+     ;; (add-to-list 'default-frame-alist '(foreground-color . "light gray"))
+     ;; (require 'color-theme)
+     ;; (autoload 'color-theme-sunburst "color-theme-sunburst" "Sunburst color theme" t)
+     ;; (eval-after-load "color-theme"
+     ;;   '(progn
+     ;;      (color-theme-initialize)
+     ;;      (color-theme-sunburst)))
+     ;;(load-theme 'sanityinc-tomorrow-day t)
+     )
    (require 'multiple-cursors)
    (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
    ;; CUA mode might make the first C-S-c into a C-c
@@ -414,3 +629,11 @@ This must be bound to a button-down mouse event."
       (edts-mode t)
       ))
    ))
+;; C-z catches me off guard even in terminals
+(global-set-key (kbd "C-z") 'undo)
+
+(setq tramp-default-user "magnus")
+
+(setq tramp-default-user-alist '())
+(add-to-list 'tramp-default-user-alist
+	     '("ssh" ".*\\.it\\.uu\\.se\\'" "mala7837"))
