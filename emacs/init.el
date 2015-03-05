@@ -343,7 +343,7 @@ Key bindings:
      (when epiphany-buffer
        (setq flycheck-checker 'c/c++-gcc
              flycheck-c/c++-gcc-executable "e-gcc"
-             flychecker-gcc-args '("-le-lib" "-std=gnu11" "-Wall"))
+             flycheck-gcc-args '("-le-lib" "-std=gnu11" "-Wall"))
        (when (package-installed-p 'auto-complete-clang)
          (setq ac-clang-flags
                '("-I/opt/adapteva/esdk/tools/e-gnu.x86_64/lib/gcc/epiphany-elf/4.8.2/include"
