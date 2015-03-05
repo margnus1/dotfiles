@@ -436,15 +436,17 @@ See also `exchange-point-and-mark'."
  'after-init-hook
  (lambda ()
    ;; (require 'edts-start)
-   (require 'color-theme)
-   (color-theme-initialize)
+   (when (package-installed-p 'color-theme)
+     (require 'color-theme)
+     (color-theme-initialize))
    (color-theme-sanityinc-tomorrow-day)
 
-   (require 'smart-tabs-mode)
-   ;; (smart-tabs-add-language-support go go-mode-hook
-   ;;   (go-mode-indent-line . tab-width))
-   ;; (smart-tabs-insinuate 'go)
-   (smart-tabs-insinuate 'c)
+   (when (package-installed-p 'smart-tabs-mode)
+     (require 'smart-tabs-mode)
+     ;; (smart-tabs-add-language-support go go-mode-hook
+     ;;   (go-mode-indent-line . tab-width))
+     ;; (smart-tabs-insinuate 'go)
+     (smart-tabs-insinuate 'c))
    (when (package-installed-p 'irony)
      ;; replace the `completion-at-point' and `complete-symbol' bindings in
      ;; irony-mode's buffers by irony-mode's function
