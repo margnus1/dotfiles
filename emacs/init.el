@@ -33,10 +33,8 @@
      ("helv" "helvetica" "arial" "fixed"))))
  '(fci-rule-color "#424242")
  '(fill-column 80)
- '(flycheck-clang-args
-   (quote
-    ("-std=c++11" "-Wall" "-DDEBUG" "-Wshorten-64-to-32")))
  '(flymake-info-line-regexp "^\\([iI]nfo\\|[nN]ote\\)")
+ '(flymake-warning-predicate "^[wWvV]arning" t)
  '(flymake-warning-re "^[wWvV]arning" t)
  '(global-linum-mode t)
  '(global-whitespace-mode nil)
@@ -44,20 +42,30 @@
  '(highlight-symbol-idle-delay 0.8)
  '(indent-tabs-mode nil)
  '(inhibit-startup-screen t)
- '(irony-additional-clang-options (quote ("--std=c++11")))
+ ;; '(irony-additional-clang-options (quote ("--std=c++11")))
  '(mouse-drag-copy-region nil)
  '(package-archives
    (quote
     (("gnu" . "http://elpa.gnu.org/packages/")
      ("marmalade" . "http://marmalade-repo.org/packages/")
      ("melpa" . "http://melpa.milkbox.net/packages/"))))
- '(safe-local-variable-values (quote ((erlang-include-dirs) (prolog-mode . t))))
+ '(safe-local-variable-values
+   (quote
+    ((epiphany-buffer . t)
+     (ac-clang-flags "-I/opt/adapteva/esdk.2014.11/tools/e-gnu.x86_64/bin/../lib/gcc/epiphany-elf/4.8.2/include" "-I/opt/adapteva/esdk.2014.11/tools/e-gnu.x86_64/bin/../lib/gcc/epiphany-elf/4.8.2/include-fixed" "-I/opt/adapteva/esdk.2014.11/tools/e-gnu.x86_64/bin/../lib/gcc/epiphany-elf/4.8.2/../../../../epiphany-elf/include")
+     (ac-sources ac-source-clang)
+     (flycheck-gcc-args "-le-lib")
+     (flycheck-mode . t)
+     (flycheck-gcc-args quote
+                        ("-le-lib"))
+     (erlang-include-dirs)
+     (prolog-mode . t))))
  '(semantic-complete-inline-analyzer-idle-displayor-class (quote semantic-displayor-tooltip))
  '(semantic-mode t)
  '(show-paren-mode t)
  '(show-trailing-whitespace nil)
  '(speedbar-load-hook (quote (visual-line-mode)))
- '(tab-width 8)
+ '(tab-width 4)
  '(tool-bar-mode nil)
  '(tool-bar-position (quote top))
  '(transient-mark-mode (quote (only . t)))
@@ -84,7 +92,7 @@
      (340 . "#e7c547")
      (360 . "#b9ca4a"))))
  '(vc-annotate-very-old-color nil)
- '(whitespace-style (quote (face tabs trailing space-before-tab empty)))
+ '(whitespace-style (quote (face trailing space-before-tab empty)))
  '(word-wrap t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -113,7 +121,7 @@
 
 
 ;; (add-to-list 'auto-coding-alist '(".*" . cp1252))
-(add-to-list 'load-path "C:/Program Files (x86)/emacs-24.2/site-lisp")
+;;(add-to-list 'load-path "C:/Program Files (x86)/emacs-24.2/site-lisp")
 (add-to-list 'load-path "~/.emacs.d/site-lisp")
 ;;(add-to-list 'load-path "~/.emacs.d/site-lisp/tramp-2.2.7")
 
@@ -197,7 +205,8 @@
 (add-hook 'git-commit-mode-hook
           (lambda ()
             (set-variable 'show-trailing-whitespace nil)
-            (set-variable 'fill-column              72)))
+            (set-variable 'fill-column              72)
+            (flyspell-mode t)))
 
 (defun my-lisplike-hook ()
   (rainbow-delimiters-mode t))
@@ -308,7 +317,8 @@ Key bindings:
 (defun my-c++-mode-hook ()
   (setq show-trailing-whitespace t)
   (local-set-key "\C-c\C-v" 'flymake-goto-next-error)
-  (setq flycheck-clang-args '("-std=c++11")))
+  ;;(setq flycheck-clang-args '("-std=c++11"))
+        )
 
 ;; (add-to-list 'auto-mode-alist '("\\.\\(h\\|tcc\\)\\'" . c++-mode))
 ;;(add-hook 'c++-mode-hook 'flymake-mode)
@@ -320,15 +330,30 @@ Key bindings:
 (add-hook 'c++-mode-hook 'my-c++-mode-hook)
 ;;(add-hook 'c++-mode-hook 'my-flymake-minor-mode)
 
+(defvar epiphany-buffer nil "Set to t in Epiphaany-specific buffers")
 (defun my-c-mode-hook ()
   (setq show-trailing-whitespace nil)
-  (setq indent-tabs-mode t)
+  (setq indent-tabs-mode nil)
   ;;(whitespace-mode)
-  )
+  (when (package-installed-p 'auto-complete-clang)
+    (setq ac-sources '(ac-source-clang)))
+  (add-hook
+   'hack-local-variables-hook
+   (lambda()
+     (when epiphany-buffer
+       (setq flycheck-checker 'c/c++-gcc
+             flycheck-c/c++-gcc-executable "e-gcc"
+             flychecker-gcc-args '("-le-lib" "-std=gnu11" "-Wall"))
+       (when (package-installed-p 'auto-complete-clang)
+         (setq ac-clang-flags
+               '("-I/opt/adapteva/esdk/tools/e-gnu.x86_64/lib/gcc/epiphany-elf/4.8.2/include"
+                 "-I/opt/adapteva/esdk/tools/e-gnu.x86_64/lib/gcc/epiphany-elf/4.8.2/include-fixed"
+                 "-I/opt/adapteva/esdk/tools/e-gnu.x86_64/epiphany-elf/include"))))))
+  (flycheck-mode t))
+
+(message "Loading...")
 (add-hook 'c++-mode-hook 'my-cedet-hook)
-
 (add-hook 'haskell-mode-hook 'flymake-haskell-multi-load)
-
 (autoload 'javacc-mode "javacc-mode" nil t)
 
 ;; (setq exec-path (cons "C:/Program Files/Git/bin/" exec-path))
@@ -581,7 +606,6 @@ This must be bound to a button-down mouse event."
    (flycheck-define-checker erlang-better
      "An Erlang syntax checker using the Erlang interpreter."
      :command ("erlc" (option-list "-I" erlang-include-dirs)
-               "-pa" "../deps/lager/ebin"
                "-o" temporary-directory "-Wall" source)
      :error-patterns
      ((warning line-start (file-name) ":" line ": Warning:" (message) line-end)
@@ -597,7 +621,6 @@ This must be bound to a button-down mouse event."
    (flycheck-define-checker erlang-dialyzer
      "An Erlang syntax checker using the Erlang interpreter."
      :command ("dialyzer" "-nn" "--plt" (eval (find-plt))
-               "-pa" "../deps/lager/ebin"
                (option-list "-I" erlang-include-dirs) "--src" ".")
      :error-patterns
      ((warning line-start (file-name) ":" line ": " (message) line-end))
