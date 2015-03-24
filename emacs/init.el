@@ -209,10 +209,13 @@
             (flyspell-mode t)))
 
 (defun my-lisplike-hook ()
-  (rainbow-delimiters-mode t))
+  (when (package-installed-p 'rainbow-delimiters)
+    (rainbow-delimiters-mode t)))
 (add-hook 'lisp-mode-hook 'my-lisplike-hook)
 (add-hook 'emacs-lisp-mode-hook 'my-lisplike-hook)
 (add-hook 'racket-mode-hook 'my-lisplike-hook)
+(add-hook 'scheme-mode-hook  'my-lisplike-hook)
+
 ;; Usage: emacs -diff file1 file2
 (defun command-line-diff (switch)
   (let ((file1 (pop command-line-args-left))
@@ -243,8 +246,6 @@
 ;; (message "Loading php-mode...")
 (setq auto-mode-alist (cons '("\\.php$" . php-mode) auto-mode-alist))
 (autoload 'php-mode "php-mode" "Major mode for editing PHP." t)
-
-(add-hook 'scheme-mode-hook 'rainbow-delimiters-mode)
 
 (add-to-list 'load-path "~/.emacs.d/elpa/powershell-mode")
 (add-to-list 'auto-mode-alist '("\\.ps1$" . powershell-mode))
@@ -439,7 +440,8 @@ See also `exchange-point-and-mark'."
    (when (package-installed-p 'color-theme)
      (require 'color-theme)
      (color-theme-initialize))
-   (color-theme-sanityinc-tomorrow-day)
+   (when (package-installed-p 'color-theme-sanityinc-tomorrow)
+     (color-theme-sanityinc-tomorrow-day))
 
    (when (package-installed-p 'smart-tabs-mode)
      (require 'smart-tabs-mode)
@@ -483,98 +485,99 @@ See also `exchange-point-and-mark'."
      ;;      (color-theme-sunburst)))
      ;;(load-theme 'sanityinc-tomorrow-day t)
      )
-   (require 'multiple-cursors)
-   (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
-   ;; CUA mode might make the first C-S-c into a C-c
-   (global-set-key (kbd "C-c C-S-c") 'mc/edit-lines)
-   (global-set-key (kbd "C->") 'mc/mark-next-symbol-like-this)
-   (global-set-key (kbd "C-<") 'mc/mark-previous-symbol-like-this)
-   (global-set-key (kbd "C-M->") 'mc/mark-next-like-this)
-   (global-set-key (kbd "C-M-<") 'mc/mark-previous-like-this)
-   (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
-   (global-set-key (kbd "M-S-<down>") 'mc/mark-next-lines)
-   (global-set-key (kbd "M-S-<up>") 'mc/mark-previous-lines)
+   (when (package-installed-p 'multiple-cursors)
+     (require 'multiple-cursors)
+     (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+     ;; CUA mode might make the first C-S-c into a C-c
+     (global-set-key (kbd "C-c C-S-c") 'mc/edit-lines)
+     (global-set-key (kbd "C->") 'mc/mark-next-symbol-like-this)
+     (global-set-key (kbd "C-<") 'mc/mark-previous-symbol-like-this)
+     (global-set-key (kbd "C-M->") 'mc/mark-next-like-this)
+     (global-set-key (kbd "C-M-<") 'mc/mark-previous-like-this)
+     (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
+     (global-set-key (kbd "M-S-<down>") 'mc/mark-next-lines)
+     (global-set-key (kbd "M-S-<up>") 'mc/mark-previous-lines)
 
-   ;; M-drag for mc rectangle selection
-   ;; Without delete-selection-mode, but with CUA, only the selection on the line
-   ;; with the point is deleted.
-   (delete-selection-mode t)
-   (defun mouse-drag-rectangle (start-event)
-     "Highlight a rectangular region of text as the the mouse is dragged over it.
+     ;; M-drag for mc rectangle selection
+     ;; Without delete-selection-mode, but with CUA, only the selection on the line
+     ;; with the point is deleted.
+     (delete-selection-mode t)
+     (defun mouse-drag-rectangle (start-event)
+       "Highlight a rectangular region of text as the the mouse is dragged over it.
 This must be bound to a button-down mouse event."
-     (interactive "e")
-     (let* ((start-posn (event-start start-event))
-            (start-point (posn-point start-posn))
-            (start-window (posn-window start-posn))
-            (start-frame (window-frame start-window))
-            (bounds (window-edges start-window))
-            (top (nth 1 bounds))
-            (bottom (if (window-minibuffer-p start-window)
-                        (nth 3 bounds)
-                      ;; Don't count the mode line.
-                      (1- (nth 3 bounds))))
-            (click-count (1- (event-click-count start-event))))
-       (setq mouse-selection-click-count click-count)
-       (mouse-set-point start-event)
-       (set-rectangular-region-anchor)
-       (let (end-event
-             end-posn
-             end-point
-             end-window)
-         (track-mouse
-           (while (progn
-                    (setq end-event (read-event)
-                          end-posn (event-end end-event)
-                          end-point (posn-point end-posn)
-                          end-window (posn-window end-posn))
-                    (or (mouse-movement-p end-event)
-                        (eq (car-safe end-event) 'switch-frame)))
-             (cond
-              ;; Ignore switch-frame events.
-              ((eq (car-safe end-event) 'switch-frame)
-               nil)
-              ;; Are we moving within the original window?
-              ((and (eq end-window start-window)
-                    (integer-or-marker-p end-point))
-               (goto-char end-point)
-               ;; (rm-highlight-rectangle start-point end-point)
-               (rrm/repaint)
-               )
-              ;; Are we moving on a different window on the same frame?
-              ((and (windowp end-window)
-                    (eq (window-frame end-window) start-frame))
-               (let ((mouse-row (+ (nth 1 (window-edges end-window))
-                                   (cdr (posn-col-row end-posn)))))
-                 (cond
-                  ((< mouse-row top)
-                   (mouse-scroll-subr (- mouse-row top)
-                                      nil start-point))
-                  ((and (not (eobp))
-                        (>= mouse-row bottom))
-                   (mouse-scroll-subr (1+ (- mouse-row bottom))
-                                      nil start-point)))))
-              (t
-               (let ((mouse-y (cdr (cdr (mouse-position))))
-                     (menu-bar-lines (or (cdr (assq 'menu-bar-lines
-                                                    (frame-parameters)))
-                                         0)))
-                 ;; Are we on the menu bar?
-                 (and (integerp mouse-y) (< mouse-y menu-bar-lines)
-                      (mouse-scroll-subr (- mouse-y menu-bar-lines)
-                                         nil start-point)))))))
-         (and (eq (get (event-basic-type end-event) 'event-kind) 'mouse-click)
-              (eq end-window start-window)
-              (numberp end-point)
-              (if (= start-point end-point)
-                  (setq deactivate-mark t)
-                (push-mark start-point t t)
-                (goto-char end-point)
-                ;;(mc/create-fake-cursor-at-point)
-                ;;(rm-kill-ring-save start-point end-point)
-                ;;(rrm/switch-to-multiple-cursors)
-                ;;(kill-ring-save start-point end-point)
-                ))
-         )))
+       (interactive "e")
+       (let* ((start-posn (event-start start-event))
+              (start-point (posn-point start-posn))
+              (start-window (posn-window start-posn))
+              (start-frame (window-frame start-window))
+              (bounds (window-edges start-window))
+              (top (nth 1 bounds))
+              (bottom (if (window-minibuffer-p start-window)
+                          (nth 3 bounds)
+                        ;; Don't count the mode line.
+                        (1- (nth 3 bounds))))
+              (click-count (1- (event-click-count start-event))))
+         (setq mouse-selection-click-count click-count)
+         (mouse-set-point start-event)
+         (set-rectangular-region-anchor)
+         (let (end-event
+               end-posn
+               end-point
+               end-window)
+           (track-mouse
+             (while (progn
+                      (setq end-event (read-event)
+                            end-posn (event-end end-event)
+                            end-point (posn-point end-posn)
+                            end-window (posn-window end-posn))
+                      (or (mouse-movement-p end-event)
+                          (eq (car-safe end-event) 'switch-frame)))
+               (cond
+                ;; Ignore switch-frame events.
+                ((eq (car-safe end-event) 'switch-frame)
+                 nil)
+                ;; Are we moving within the original window?
+                ((and (eq end-window start-window)
+                      (integer-or-marker-p end-point))
+                 (goto-char end-point)
+                 ;; (rm-highlight-rectangle start-point end-point)
+                 (rrm/repaint)
+                 )
+                ;; Are we moving on a different window on the same frame?
+                ((and (windowp end-window)
+                      (eq (window-frame end-window) start-frame))
+                 (let ((mouse-row (+ (nth 1 (window-edges end-window))
+                                     (cdr (posn-col-row end-posn)))))
+                   (cond
+                    ((< mouse-row top)
+                     (mouse-scroll-subr (- mouse-row top)
+                                        nil start-point))
+                    ((and (not (eobp))
+                          (>= mouse-row bottom))
+                     (mouse-scroll-subr (1+ (- mouse-row bottom))
+                                        nil start-point)))))
+                (t
+                 (let ((mouse-y (cdr (cdr (mouse-position))))
+                       (menu-bar-lines (or (cdr (assq 'menu-bar-lines
+                                                      (frame-parameters)))
+                                           0)))
+                   ;; Are we on the menu bar?
+                   (and (integerp mouse-y) (< mouse-y menu-bar-lines)
+                        (mouse-scroll-subr (- mouse-y menu-bar-lines)
+                                           nil start-point)))))))
+           (and (eq (get (event-basic-type end-event) 'event-kind) 'mouse-click)
+                (eq end-window start-window)
+                (numberp end-point)
+                (if (= start-point end-point)
+                    (setq deactivate-mark t)
+                  (push-mark start-point t t)
+                  (goto-char end-point)
+                  ;;(mc/create-fake-cursor-at-point)
+                  ;;(rm-kill-ring-save start-point end-point)
+                  ;;(rrm/switch-to-multiple-cursors)
+                  ;;(kill-ring-save start-point end-point)
+                  ))
+           ))))
 
    (global-unset-key (kbd "M-<mouse-1>"))
    (global-unset-key (kbd "M-<drag-mouse-1>"))
