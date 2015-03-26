@@ -42,7 +42,6 @@
  '(highlight-symbol-idle-delay 0.8)
  '(indent-tabs-mode nil)
  '(inhibit-startup-screen t)
- ;; '(irony-additional-clang-options (quote ("--std=c++11")))
  '(mouse-drag-copy-region nil)
  '(package-archives
    (quote
@@ -65,7 +64,7 @@
  '(show-paren-mode t)
  '(show-trailing-whitespace nil)
  '(speedbar-load-hook (quote (visual-line-mode)))
- '(tab-width 4)
+ ;; '(tab-width 4)
  '(tool-bar-mode nil)
  '(tool-bar-position (quote top))
  '(transient-mark-mode (quote (only . t)))
@@ -326,12 +325,15 @@ Key bindings:
 ;; (add-hook 'c++-mode-hook 'adaptive-wrap-prefix-mode)
 (add-hook 'c++-mode-hook 'flycheck-mode)
 (add-hook 'c++-mode-hook 'linum-mode)
-(add-hook 'c++-mode-hook 'semantic-mode)
+;;(add-hook 'c++-mode-hook 'semantic-mode)
 ;; (add-hook 'c++-mode-hook 'irony-mode)
 (add-hook 'c++-mode-hook 'my-c++-mode-hook)
 ;;(add-hook 'c++-mode-hook 'my-flymake-minor-mode)
 
-(defvar epiphany-buffer nil "Set to t in Epiphaany-specific buffers")
+(defvar epiphany-buffer nil "Set to t in Epiphany-specific buffers")
+(put 'epiphany-buffer 'safe-local-variable #'booleanp)
+(defvar extra-cc-flags nil "Additional compiler flags")
+(put 'extra-cc-flags 'safe-local-variable #'listp)
 (defun my-c-mode-hook ()
   (setq show-trailing-whitespace nil)
   (setq indent-tabs-mode nil)
@@ -342,14 +344,19 @@ Key bindings:
    'hack-local-variables-hook
    (lambda()
      (when epiphany-buffer
-       (setq flycheck-checker 'c/c++-gcc
-             flycheck-c/c++-gcc-executable "e-gcc"
-             flycheck-gcc-args '("-le-lib" "-std=gnu11" "-Wall"))
        (when (package-installed-p 'auto-complete-clang)
          (setq ac-clang-flags
-               '("-I/opt/adapteva/esdk/tools/e-gnu.x86_64/lib/gcc/epiphany-elf/4.8.2/include"
-                 "-I/opt/adapteva/esdk/tools/e-gnu.x86_64/lib/gcc/epiphany-elf/4.8.2/include-fixed"
-                 "-I/opt/adapteva/esdk/tools/e-gnu.x86_64/epiphany-elf/include"))))))
+               (append
+                '("-I/opt/adapteva/esdk/tools/e-gnu.x86_64/lib/gcc/epiphany-elf/4.8.2/include"
+                  "-I/opt/adapteva/esdk/tools/e-gnu.x86_64/lib/gcc/epiphany-elf/4.8.2/include-fixed"
+                  "-I/opt/adapteva/esdk/tools/e-gnu.x86_64/epiphany-elf/include"
+                  "-D__epiphany__")
+                ac-clang-flags)))
+       (setq flycheck-checker 'c/c++-gcc
+             flycheck-c/c++-gcc-executable "epiphany-elf-gcc"
+             flycheck-gcc-args (append '("-le-lib" "-std=gnu11" "-Wall") flycheck-gcc-args)))
+     (setq ac-clang-flags (append ac-clang-flags extra-cc-flags)
+           flycheck-gcc-args (append flycheck-gcc-args extra-cc-flags))))
   (flycheck-mode t))
 
 (message "Loading...")
@@ -443,12 +450,14 @@ See also `exchange-point-and-mark'."
    (when (package-installed-p 'color-theme-sanityinc-tomorrow)
      (color-theme-sanityinc-tomorrow-day))
 
-   (when (package-installed-p 'smart-tabs-mode)
-     (require 'smart-tabs-mode)
-     ;; (smart-tabs-add-language-support go go-mode-hook
-     ;;   (go-mode-indent-line . tab-width))
-     ;; (smart-tabs-insinuate 'go)
-     (smart-tabs-insinuate 'c))
+   ;; Disabled for Erlang
+   ;; (when (package-installed-p 'smart-tabs-mode)
+   ;;   (require 'smart-tabs-mode)
+   ;;   ;; (smart-tabs-add-language-support go go-mode-hook
+   ;;   ;;   (go-mode-indent-line . tab-width))
+   ;;   ;; (smart-tabs-insinuate 'go)
+   ;;   (smart-tabs-insinuate 'c))
+
    (when (package-installed-p 'irony)
      ;; replace the `completion-at-point' and `complete-symbol' bindings in
      ;; irony-mode's buffers by irony-mode's function
