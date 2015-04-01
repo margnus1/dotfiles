@@ -337,6 +337,7 @@ Key bindings:
 (defun my-c-mode-hook ()
   (setq show-trailing-whitespace nil)
   (setq indent-tabs-mode nil)
+  (hi-lock-mode)
   ;;(whitespace-mode)
   (when (package-installed-p 'auto-complete-clang)
     (setq ac-sources '(ac-source-clang)))
@@ -352,10 +353,12 @@ Key bindings:
                   "-I/opt/adapteva/esdk/tools/e-gnu.x86_64/epiphany-elf/include"
                   "-D__epiphany__")
                 ac-clang-flags)))
-       (setq flycheck-checker 'c/c++-gcc
-             flycheck-c/c++-gcc-executable "epiphany-elf-gcc"
+       (setq flycheck-c/c++-gcc-executable "epiphany-elf-gcc"
              flycheck-gcc-args (append '("-le-lib" "-std=gnu11" "-Wall") flycheck-gcc-args)))
-     (setq ac-clang-flags (append ac-clang-flags extra-cc-flags)
+     (unless epiphany-buffer
+       (setq flycheck-c/c++-gcc-executable "arm-linux-gnueabihf-gcc"))
+     (setq flycheck-checker 'c/c++-gcc
+           ac-clang-flags (append ac-clang-flags extra-cc-flags)
            flycheck-gcc-args (append flycheck-gcc-args extra-cc-flags))))
   (flycheck-mode t))
 
@@ -641,26 +644,26 @@ This must be bound to a button-down mouse event."
      :predicate can-dialyze-p
      :modes erlang-mode)
    (flycheck-def-option-var erlang-include-dirs
-       (list "../include") erlang-better
+       nil erlang-better
      "The relative paths where erlc can find include files")
    (add-to-list 'flycheck-checkers 'erlang-dialyzer 'erlang-better)
 
    (add-hook
     'erlang-mode-hook
     (lambda ()
-      (setq indent-tabs-mode nil)
-      (setq erlang-indent-level 4)
-      (setq erlang-indent-guard 2)
-      (setq erlang-argument-indent 2)
+      ;; (setq indent-tabs-mode nil)
+      ;; (setq erlang-indent-level 4)
+      ;; (setq erlang-indent-guard 2)
+      ;; (setq erlang-argument-indent 2)
 
-      ;; Highlight whitespace errors
-      (setq whitespace-style (quote (face tabs trailing space-before-tab empty
-                                          lines-tail)))
-      (setq whitespace-line-column 92)
-      (setq fill-column 92)
-      (whitespace-mode t)
-      (set-face-background 'whitespace-tab "red")
-      (set-face-background 'whitespace-trailing "red")
+      ;; ;; Highlight whitespace errors
+      ;; (setq whitespace-style (quote (face tabs trailing space-before-tab empty
+      ;;                                     lines-tail)))
+      ;; (setq whitespace-line-column 92)
+      ;; (setq fill-column 92)
+      ;; (whitespace-mode t)
+      ;; (set-face-background 'whitespace-tab "red")
+      ;; (set-face-background 'whitespace-trailing "red")
 
       ;; Syntax checking
       (flycheck-select-checker 'erlang-better)
