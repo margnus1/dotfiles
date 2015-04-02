@@ -152,7 +152,7 @@
 ;; (add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
 ;; (load-theme 'sunburst t)
 
-(message "Loading package-mode")
+(message "Loading package-mode...")
 (package-initialize)
 
 (when (package-installed-p 'web-mode)
@@ -341,6 +341,7 @@ Key bindings:
   ;;(whitespace-mode)
   (when (package-installed-p 'auto-complete-clang)
     (setq ac-sources '(ac-source-clang)))
+  (setq flycheck-checker 'c/c++-gcc)
   (add-hook
    'hack-local-variables-hook
    (lambda()
@@ -348,18 +349,18 @@ Key bindings:
        (when (package-installed-p 'auto-complete-clang)
          (setq ac-clang-flags
                (append
-                '("-I/opt/adapteva/esdk/tools/e-gnu.x86_64/lib/gcc/epiphany-elf/4.8.2/include"
-                  "-I/opt/adapteva/esdk/tools/e-gnu.x86_64/lib/gcc/epiphany-elf/4.8.2/include-fixed"
-                  "-I/opt/adapteva/esdk/tools/e-gnu.x86_64/epiphany-elf/include"
+                '("-I/opt/adapteva/esdk/tools/e-gnu/lib/gcc/epiphany-elf/4.8.2/include"
+                  "-I/opt/adapteva/esdk/tools/e-gnu/lib/gcc/epiphany-elf/4.8.2/include-fixed"
+                  "-I/opt/adapteva/esdk/tools/e-gnu/epiphany-elf/include"
                   "-D__epiphany__")
                 ac-clang-flags)))
        (setq flycheck-c/c++-gcc-executable "epiphany-elf-gcc"
              flycheck-gcc-args (append '("-le-lib" "-std=gnu11" "-Wall") flycheck-gcc-args)))
      (unless epiphany-buffer
-       (setq flycheck-c/c++-gcc-executable "arm-linux-gnueabihf-gcc"))
-     (setq flycheck-checker 'c/c++-gcc
-           ac-clang-flags (append ac-clang-flags extra-cc-flags)
-           flycheck-gcc-args (append flycheck-gcc-args extra-cc-flags))))
+       (setq flycheck-c/c++-gcc-executable "gcc"))
+     (when (package-installed-p 'auto-complete-clang)
+       (setq ac-clang-flags (append ac-clang-flags extra-cc-flags)))
+     (setq flycheck-gcc-args (append flycheck-gcc-args extra-cc-flags))))
   (flycheck-mode t))
 
 (message "Loading...")
@@ -599,83 +600,10 @@ This must be bound to a button-down mouse event."
 ;; TRAMP windows bug circumvention kludge
 ;;(set 'tramp-rsh-end-of-line "\r")
 
-(setq package-archives
-      (quote (("gnu" . "http://elpa.gnu.org/packages/")
-              ("marmalade" . "http://marmalade-repo.org/packages/")
-              ("melpa" . "http://melpa.milkbox.net/packages/"))))
-(package-initialize)
-;; check if the packages are installed; if not, install them.
-(mapc
- (lambda (package)
-   (unless (package-installed-p package)
-     (package-refresh-contents)
-     (package-install package)))
- '(flycheck))
-
-(add-hook
- 'after-init-hook
- (lambda ()
-   ;; Add include directory support to the flychecker
-   (require 'flycheck)
-   (defun is-erlang-p()
-     (and (>= (length (buffer-file-name)) 4)
-          (string= (substring (buffer-file-name) -4) ".erl")))
-   (flycheck-define-checker erlang-better
-     "An Erlang syntax checker using the Erlang interpreter."
-     :command ("erlc" (option-list "-I" erlang-include-dirs)
-               "-o" temporary-directory "-Wall" source)
-     :error-patterns
-     ((warning line-start (file-name) ":" line ": Warning:" (message) line-end)
-      (error line-start (file-name) ":" line ": " (message) line-end))
-     :predicate is-erlang-p
-     :modes erlang-mode
-     :next-checkers ((error . erlang-dialyzer)))
-   (defun find-plt()
-     (or (car (file-expand-wildcards ".*[_\.]plt"))
-         (car (file-expand-wildcards "../.*[_\.]plt"))
-         (and (file-exists-p "~/.dialyzer_plt") (file-truename "~/.dialyzer_plt"))))
-   (defun can-dialyze-p() (and (flycheck-buffer-saved-p) (is-erlang-p) (find-plt)))
-   (flycheck-define-checker erlang-dialyzer
-     "An Erlang syntax checker using the Erlang interpreter."
-     :command ("dialyzer" "-nn" "--plt" (eval (find-plt))
-               (option-list "-I" erlang-include-dirs) "--src" ".")
-     :error-patterns
-     ((warning line-start (file-name) ":" line ": " (message) line-end))
-     :predicate can-dialyze-p
-     :modes erlang-mode)
-   (flycheck-def-option-var erlang-include-dirs
-       nil erlang-better
-     "The relative paths where erlc can find include files")
-   (add-to-list 'flycheck-checkers 'erlang-dialyzer 'erlang-better)
-
-   (add-hook
-    'erlang-mode-hook
-    (lambda ()
-      ;; (setq indent-tabs-mode nil)
-      ;; (setq erlang-indent-level 4)
-      ;; (setq erlang-indent-guard 2)
-      ;; (setq erlang-argument-indent 2)
-
-      ;; ;; Highlight whitespace errors
-      ;; (setq whitespace-style (quote (face tabs trailing space-before-tab empty
-      ;;                                     lines-tail)))
-      ;; (setq whitespace-line-column 92)
-      ;; (setq fill-column 92)
-      ;; (whitespace-mode t)
-      ;; (set-face-background 'whitespace-tab "red")
-      ;; (set-face-background 'whitespace-trailing "red")
-
-      ;; Syntax checking
-      (flycheck-select-checker 'erlang-better)
-      (flycheck-mode t)
-
-      (setq erlang-electric-newline-criteria '())
-      (setq erlang-electric-commands '(erlang-electric-comma erlang-electric-semicolon))
-      (edts-mode t)
-      ))
-   ))
 ;; C-z catches me off guard even in terminals
 (global-set-key (kbd "C-z") 'undo)
+(unless window-system
+  (global-set-key (kbd "C-M-z") 'suspend-emacs))
 
 (setq tramp-default-user "magnus")
 
