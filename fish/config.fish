@@ -2,7 +2,6 @@ alias cd..="cd .."
 alias dir="dir --color=auto -h"
 alias ls="ls --color=auto -h"
 alias cls=clear
-alias ssh="ssh -A"
 alias free="free -h"
 alias emacs="emacs -nw"
 
