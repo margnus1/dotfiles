@@ -20,7 +20,8 @@ if [ "x$TERM" = "xxterm" ]
    set -x TERM xterm-256color
 end
 set -x EDITOR emacs
-set -x LESS "-SR"
+# LESS makes git sad
+# set -x LESS "-SR"
 set -x BLOCKSIZE human-readable
 
 set __fish_git_prompt_color_prefix yellow --bold
