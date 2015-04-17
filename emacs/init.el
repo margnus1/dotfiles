@@ -275,9 +275,6 @@
 
 (modify-coding-system-alist 'file "\\.nfo\\'" 'cp850)
 ;; (load-file "/usr/share/emacs/24.3/lisp/cedet/cedet.elc")
-(require 'semantic)
-(require 'semantic/ia)
-(global-ede-mode 1)                      ; Enable the Project management system
 
 ;; flymake
 (defvar my-flymake-minor-mode-map
@@ -338,7 +335,8 @@ Key bindings:
   (setq show-trailing-whitespace nil)
   (setq indent-tabs-mode nil)
   (hi-lock-mode)
-  ;;(whitespace-mode)
+  (setq indent-tabs-mode t
+        tab-width 8)
   (when (package-installed-p 'auto-complete-clang)
     (setq ac-sources '(ac-source-clang)))
   (setq flycheck-checker 'c/c++-gcc)
@@ -347,20 +345,26 @@ Key bindings:
    (lambda()
      (when epiphany-buffer
        (when (package-installed-p 'auto-complete-clang)
-         (setq ac-clang-flags
-               (append
-                '("-I/opt/adapteva/esdk/tools/e-gnu/lib/gcc/epiphany-elf/4.8.2/include"
-                  "-I/opt/adapteva/esdk/tools/e-gnu/lib/gcc/epiphany-elf/4.8.2/include-fixed"
-                  "-I/opt/adapteva/esdk/tools/e-gnu/epiphany-elf/include"
-                  "-D__epiphany__")
-                ac-clang-flags)))
-       (setq flycheck-c/c++-gcc-executable "epiphany-elf-gcc"
-             flycheck-gcc-args (append '("-le-lib" "-std=gnu11" "-Wall") flycheck-gcc-args)))
+         (setq-local ac-clang-flags
+                     (append
+                      '("-I/opt/adapteva/esdk/tools/e-gnu.x86_64/lib/gcc/epiphany-elf/4.8.2/include"
+                        "-I/opt/adapteva/esdk/tools/e-gnu.x86_64/lib/gcc/epiphany-elf/4.8.2/include-fixed"
+                        "-I/opt/adapteva/esdk/tools/e-gnu.x86_64/epiphany-elf/include"
+                        "-D__epiphany__") ac-clang-flags)))
+       (setq-local flycheck-c/c++-gcc-executable "epiphany-elf-gcc"))
      (unless epiphany-buffer
-       (setq flycheck-c/c++-gcc-executable "gcc"))
+       (when (package-installed-p 'auto-complete-clang)
+         (setq-local ac-clang-flags
+                     (append
+                      '("-I/usr/lib/gcc/arm-linux-gnueabihf/4.9.2/include"
+                        "-I/usr/lib/gcc/arm-linux-gnueabihf/4.9.2/include-fixed"
+                        "-I/usr/lib/gcc/arm-linux-gnueabihf/4.9.2/../../../../arm-linux-gnueabihf/include")
+                      ac-clang-flags)))
+       (setq-local flycheck-c/c++-gcc-executable "arm-linux-gnueabihf-gcc"))
+     (setq flycheck-checker 'c/c++-gcc)
      (when (package-installed-p 'auto-complete-clang)
-       (setq ac-clang-flags (append ac-clang-flags extra-cc-flags)))
-     (setq flycheck-gcc-args (append flycheck-gcc-args extra-cc-flags))))
+       (setq-local ac-clang-flags (append ac-clang-flags extra-cc-flags)))
+     (setq-local flycheck-gcc-args (append flycheck-gcc-args extra-cc-flags))))
   (flycheck-mode t))
 
 (message "Loading...")
@@ -378,7 +382,6 @@ Key bindings:
   )
 
 (add-hook 'c-mode-hook 'linum-mode)
-(add-hook 'c-mode-hook 'semantic-mode)
 (add-hook 'c-mode-hook 'my-c-mode-hook)
 
 ;;(add-to-list 'semantic-default-submodes 'global-semantic-highlight-func-mode)
@@ -447,6 +450,9 @@ See also `exchange-point-and-mark'."
 (add-hook
  'after-init-hook
  (lambda ()
+   (when (package-installed-p 'ws-trim)
+     (global-ws-trim-mode t))
+
    ;; (require 'edts-start)
    (when (package-installed-p 'color-theme)
      (require 'color-theme)
