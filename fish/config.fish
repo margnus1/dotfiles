@@ -4,6 +4,9 @@ alias ls="ls --color=auto -h"
 alias cls=clear
 alias free="free -h"
 alias emacs="emacs -nw"
+alias less="less -SR"
+alias cp="cp -i"
+alias mv="mv -i"
 
 # set -x LC_ALL sv_se.UTF-8
 # set -x LANG sv_SE.UTF-8
@@ -20,8 +23,6 @@ if [ "x$TERM" = "xxterm" ]
    set -x TERM xterm-256color
 end
 set -x EDITOR emacs
-# LESS makes git sad
-# set -x LESS "-SR"
 set -x BLOCKSIZE human-readable
 
 set __fish_git_prompt_color_prefix yellow --bold
