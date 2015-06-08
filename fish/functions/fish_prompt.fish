@@ -38,7 +38,9 @@ function fish_prompt --description 'Write out the prompt'
             end
 
             printf '%s%s ' "$__fish_prompt_red" $__fish_prompt_hostname
-            printf '%s' (__fish_git_prompt "[%s] ")
+            if [ "x$NO_GIT_PROMPT" = "x" ]
+                printf '%s' (__fish_git_prompt "[%s] ")
+            end
             printf '%s%s%s> ' "$__fish_prompt_cwd" (prompt_pwd) "$__fish_prompt_normal"
 
         end
