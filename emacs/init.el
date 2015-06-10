@@ -317,6 +317,17 @@ Key bindings:
   ;;(setq flycheck-clang-args '("-std=c++11"))
         )
 
+(when (package-installed-p 'auto-complete)'
+  (defun my-keyboard-escape ()
+    (interactive)
+    (cond (ac-menu (keyboard-quit))
+          (t (keyboard-escape-quit))))
+  (global-set-key (kbd "M-ESC ESC") 'my-keyboard-escape)
+  (defun my-auto-complete-hook ()
+    (when (package-installed-p 'yasnippet)
+      (yas-minor-mode t)))
+  (add-hook 'auto-complete-mode-hook 'my-auto-complete-hook))
+
 ;; (add-to-list 'auto-mode-alist '("\\.\\(h\\|tcc\\)\\'" . c++-mode))
 ;;(add-hook 'c++-mode-hook 'flymake-mode)
 ;; (add-hook 'c++-mode-hook 'adaptive-wrap-prefix-mode)
