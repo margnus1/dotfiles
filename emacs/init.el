@@ -436,6 +436,27 @@ Key bindings:
 
 (autoload 'javacc-mode "javacc-mode" nil t)
 
+;; Modify C-x C-(+|-|0) to change the frame rather than the buffer
+(eval-after-load "face-remap"
+  '(progn
+     (defun text-scale-increase (inc)
+       (interactive "p")
+       (let* ((lst (split-string (frame-parameter nil 'font) "-"))
+              (oldstr (nth 7 lst))
+              (old (string-to-int oldstr))
+              (new (+ old inc))
+              (newstr (int-to-string new)))
+         (setcar (nthcdr 7 lst) newstr)
+         (modify-frame-parameters nil `((font . ,(mapconcat 'identity lst "-"))))))
+     (setq initial-frame-font (frame-parameter nil 'font))
+     (defun reset-frame-font ()
+       (interactive)
+       (let ((frame-font (or (assoc 'font initial-frame-alist)
+                             (assoc 'font default-frame-alist)
+                             initial-frame-font)))
+       (modify-frame-parameters nil `((font . ,frame-font)))))
+     (global-set-key (kbd "C-x C-0") 'reset-frame-font)))
+
 ;; Stop C-x C-x from activating the mark
 (defun sane-exchange-point-and-mark (arg)
   "Exchange point and mark.
