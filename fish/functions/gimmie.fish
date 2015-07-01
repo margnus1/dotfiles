@@ -7,10 +7,7 @@ else
     if [ (count $PKGS) -eq 0 ]
        set -l PKGS (pkgfile $argv | cut -d/ -f2)
     end
-    if [ (count $PKGS) -eq 0 ]
-        # echo No package
-        return 1
-    else if [ (count $PKGS) -eq 1 ]
+    if [ (count $PKGS) -eq 1 ]
             yaourt --needed -S $PKGS
     else if [ (count $PKGS) -gt 1 ]
             pkgfile $argv

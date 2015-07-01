@@ -36,6 +36,7 @@
  '(flymake-info-line-regexp "^\\([iI]nfo\\|[nN]ote\\)")
  '(flymake-warning-predicate "^[wWvV]arning" t)
  '(flymake-warning-re "^[wWvV]arning" t)
+ '(flyspell-default-dictionary "british")
  '(global-linum-mode t)
  '(global-whitespace-mode nil)
  '(haskell-mode-hook (quote (turn-on-haskell-indentation)) t)

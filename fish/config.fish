@@ -14,9 +14,6 @@ set -x LC_ALL en_GB.UTF-8
 set -x LANG en_GB.UTF-8
 set -x LANGUAGE "sv_SE:en_GB:en"
 
-set -x SMLNJ_HOME "/usr/lib/smlnj"
-set -x PATH $PATH /usr/lib/smlnj/bin
-
 set FISH_CLIPBOARD_CMD "cat" # Stop that.
 # -Ux doesn't seem to work
 if [ "x$TERM" = "xxterm" ]
