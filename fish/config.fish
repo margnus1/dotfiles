@@ -27,7 +27,7 @@ set -x BLOCKSIZE human-readable
 
 set __fish_git_prompt_color_prefix yellow --bold
 set __fish_git_prompt_color_suffix yellow --bold
-# set __fish_git_prompt_color_branch red --bold
+set __fish_git_prompt_color_branch green
 set __fish_git_prompt_show_informative_status 1
 set -x __fish_git_prompt_showcolorhints 1
 set __fish_git_prompt_char_stagedstate " ~"
@@ -40,3 +40,8 @@ set __fish_git_prompt_char_upstream_behind ' <'
 set __fish_git_prompt_char_upstream_diverged ' <>'
 set __fish_git_prompt_char_cleanstate ''
 set __fish_git_prompt_char_stateseparator ''
+
+# Any machine-specific configuration goes in local.fish
+if [ -f ~/.config/fish/local.fish ]
+    . ~/.config/fish/local.fish
+end
