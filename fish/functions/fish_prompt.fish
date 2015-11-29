@@ -1,4 +1,5 @@
 function fish_prompt --description 'Write out the prompt'
+        set -l __status $status
 
         # Just calculate these once, to save a few cycles when displaying the prompt
         if not set -q __fish_prompt_hostname
@@ -41,7 +42,15 @@ function fish_prompt --description 'Write out the prompt'
             if [ "x$NO_GIT_PROMPT" = "x" ]
                 printf '%s' (__fish_git_prompt "[%s] ")
             end
-            printf '%s%s%s> ' "$__fish_prompt_cwd" (prompt_pwd) "$__fish_prompt_normal"
+
+            printf '%s%s%s' "$__fish_prompt_cwd" (prompt_pwd) "$__fish_prompt_normal"
+
+            if [ $__status != 0 ]
+               # ↵
+               printf ' %s%s%s' "$__fish_prompt_red" $__status "$__fish_prompt_normal"
+            end
+
+            printf '> '
 
         end
 
