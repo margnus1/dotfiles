@@ -400,7 +400,7 @@ Key bindings:
 (add-to-list 'semantic-default-submodes 'global-semantic-idle-local-symbol-highlight-mode)
 (add-to-list 'semantic-default-submodes 'global-semantic-idle-scheduler-mode)
 ;;(add-to-list 'semantic-default-submodes 'global-semantic-idle-completions-mode)
-(add-to-list 'semantic-default-submodes 'global-semantic-idle-summary-mode)
+;;(add-to-list 'semantic-default-submodes 'global-semantic-idle-summary-mode)
 ;;(add-to-list 'semantic-default-submodes 'global-semantic-stickyfunc-mode)
 (global-set-key (kbd "<f12>") 'semantic-ia-fast-jump)
 
@@ -676,6 +676,11 @@ This must be bound to a button-down mouse event."
        "The relative paths where erlc can find include files")
      (add-to-list 'flycheck-checkers 'erlang-dialyzer 'erlang-better)
 
+     (defun erlang-stop-when-at-any-guard ()
+       (save-excursion
+         (beginning-of-line)
+         (if (looking-at ".*\\(if\\|when\\) \\([^-]\\|-[^>]\\)*$") 'stop nil)))
+
      (add-hook
       'erlang-mode-hook
       (lambda ()
@@ -689,15 +694,12 @@ This must be bound to a button-down mouse event."
         (flycheck-mode t)
 
         (setq erlang-electric-newline-criteria '())
+        ;; if X, Y -> ...
+        (add-to-list 'erlang-electric-comma-criteria 'erlang-stop-when-at-any-guard)
+        (add-to-list 'erlang-electric-semicolon-criteria 'erlang-stop-when-at-if-guard)
         (setq erlang-electric-commands '(erlang-electric-comma erlang-electric-semicolon)))))))
 
 ;; C-z catches me off guard even in terminals
 (global-set-key (kbd "C-z") 'undo)
 (unless window-system
   (global-set-key (kbd "C-M-z") 'suspend-emacs))
-
-(setq tramp-default-user "magnus")
-
-(setq tramp-default-user-alist '())
-(add-to-list 'tramp-default-user-alist
-	     '("ssh" ".*\\.it\\.uu\\.se\\'" "mala7837"))
