@@ -43,15 +43,18 @@
  '(highlight-symbol-idle-delay 0.8)
  '(indent-tabs-mode nil)
  '(inhibit-startup-screen t)
+ '(markdown-open-command "xdg-open")
  '(mouse-drag-copy-region nil)
+ '(org-enforce-todo-dependencies t)
  '(package-archives
    (quote
-    (("gnu" . "http://elpa.gnu.org/packages/")
-     ("marmalade" . "http://marmalade-repo.org/packages/")
-     ("melpa" . "http://melpa.milkbox.net/packages/"))))
+    (("gnu" . "https://elpa.gnu.org/packages/")
+     ("marmalade" . "https://marmalade-repo.org/packages/")
+     ("melpa" . "https://melpa.org/packages/"))))
  '(safe-local-variable-values
    (quote
-    ((epiphany-buffer . t)
+    ((whitespace-mode . t)
+     (epiphany-buffer . t)
      (ac-clang-flags "-I/opt/adapteva/esdk.2014.11/tools/e-gnu.x86_64/bin/../lib/gcc/epiphany-elf/4.8.2/include" "-I/opt/adapteva/esdk.2014.11/tools/e-gnu.x86_64/bin/../lib/gcc/epiphany-elf/4.8.2/include-fixed" "-I/opt/adapteva/esdk.2014.11/tools/e-gnu.x86_64/bin/../lib/gcc/epiphany-elf/4.8.2/../../../../epiphany-elf/include")
      (ac-sources ac-source-clang)
      (flycheck-gcc-args "-le-lib")
@@ -62,6 +65,7 @@
      (prolog-mode . t))))
  '(semantic-complete-inline-analyzer-idle-displayor-class (quote semantic-displayor-tooltip))
  '(semantic-mode t)
+ '(sentence-end-double-space nil)
  '(show-paren-mode t)
  '(show-trailing-whitespace nil)
  '(speedbar-load-hook (quote (visual-line-mode)))
@@ -92,7 +96,7 @@
      (340 . "#e7c547")
      (360 . "#b9ca4a"))))
  '(vc-annotate-very-old-color nil)
- '(whitespace-style (quote (face trailing space-before-tab empty)))
+ '(whitespace-style (quote (face trailing space-before-tab empty tabs)))
  '(word-wrap t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -157,7 +161,8 @@
 (package-initialize)
 
 (when (package-installed-p 'web-mode)
-  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode)))
+  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.php$"     . web-mode)))
 ;; (add-to-list 'custom-theme-load-path "~/.emacs.d/elpa")
 
 ;; (message "Loading erlang mode...")
@@ -244,8 +249,6 @@
   (flycheck-mode t))
 (add-hook 'go-mode-hook 'my-go-mode-hook)
 ;; (message "Loading php-mode...")
-(setq auto-mode-alist (cons '("\\.php$" . php-mode) auto-mode-alist))
-(autoload 'php-mode "php-mode" "Major mode for editing PHP." t)
 
 (add-to-list 'load-path "~/.emacs.d/elpa/powershell-mode")
 (add-to-list 'auto-mode-alist '("\\.ps1$" . powershell-mode))
@@ -665,7 +668,7 @@ This must be bound to a button-down mouse event."
      (defun can-dialyze-p() (and (flycheck-buffer-saved-p) (is-erlang-p) (find-plt)))
      (flycheck-define-checker erlang-dialyzer
        "An Erlang syntax checker using the Erlang interpreter."
-       :command ("dialyzer" "-nn" "--plt" (eval (find-plt))
+       :command ("dialyzer" "-n" "--plt" (eval (find-plt))
                  (option-list "-I" erlang-include-dirs) "--src" ".")
        :error-patterns
        ((warning line-start (file-name) ":" line ": " (message) line-end))
