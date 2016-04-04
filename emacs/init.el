@@ -15,7 +15,6 @@
  '(cua-enable-cua-keys nil)
  '(cua-mode t nil (cua-base))
  '(cua-remap-control-z nil)
- '(custom-enabled-themes (quote (sanityinc-tomorrow-day)))
  '(custom-safe-themes
    (quote
     ("70ef61cc7736345eb1d2d449a9251e683625ba977f53a4d7cdbd4b9e81425b5e" "1b8d67b43ff1723960eb5e0cba512a2c7a2ad544ddb2533a90101fd1852b426e" "82d2cac368ccdec2fcc7573f24c3f79654b78bf133096f9b40c20d97ec1d8016" "bb08c73af94ee74453c90422485b29e5643b73b05e8de029a6909af6a3fb3f58" "628278136f88aa1a151bb2d6c8a86bf2b7631fbea5f0f76cba2a0079cd910f7d" "06f0b439b62164c6f8f84fdda32b62fb50b6d00e8b01c2208e55543a6337433a" default)))
@@ -354,6 +353,7 @@ Key bindings:
         tab-width 8)
   (when (package-installed-p 'auto-complete-clang)
     (setq ac-sources '(ac-source-clang)))
+  (make-local-variable 'flycheck-checker)
   (setq flycheck-checker 'c/c++-gcc)
   (add-hook
    'hack-local-variables-hook
@@ -376,6 +376,7 @@ Key bindings:
                         "-I/usr/lib/gcc/arm-linux-gnueabihf/4.9.2/../../../../arm-linux-gnueabihf/include")
                       ac-clang-flags)))
        (setq-local flycheck-c/c++-gcc-executable "arm-linux-gnueabihf-gcc"))
+     (make-local-variable 'flycheck-checker)
      (setq flycheck-checker 'c/c++-gcc)
      (when (package-installed-p 'auto-complete-clang)
        (setq-local ac-clang-flags (append ac-clang-flags extra-cc-flags)))
@@ -489,7 +490,6 @@ See also `exchange-point-and-mark'."
    (when (package-installed-p 'ws-trim)
      (global-ws-trim-mode t))
 
-   ;; (require 'edts-start)
    (when (package-installed-p 'color-theme)
      (require 'color-theme)
      (color-theme-initialize))
