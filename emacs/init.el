@@ -33,6 +33,7 @@
      ("helv" "helvetica" "arial" "fixed"))))
  '(fci-rule-color "#424242")
  '(fill-column 80)
+ '(flycheck-checker-error-threshold 2000)
  '(flymake-info-line-regexp "^\\([iI]nfo\\|[nN]ote\\)")
  '(flymake-warning-predicate "^[wWvV]arning" t)
  '(flymake-warning-re "^[wWvV]arning" t)
@@ -109,15 +110,15 @@
  '(flymake-errline ((t (:underline (:color "OrangeRed" :style wave)))))
  '(flymake-infoline ((t nil)))
  '(flymake-warnline ((t (:underline (:color "goldenrod" :style wave)))))
- '(rainbow-delimiters-depth-1-face ((t nil)))
+ '(rainbow-delimiters-depth-1-face ((t (:foreground "#4d4d4c"))))
  '(rainbow-delimiters-depth-2-face ((t (:foreground "#7398f6"))))
- '(rainbow-delimiters-depth-3-face ((t nil)))
- '(rainbow-delimiters-depth-4-face ((t (:foreground "#75c878"))))
- '(rainbow-delimiters-depth-5-face ((t nil)))
- '(rainbow-delimiters-depth-6-face ((t (:foreground "#f0a093"))))
- '(rainbow-delimiters-depth-7-face ((t nil)))
- '(rainbow-delimiters-depth-8-face ((t (:foreground "#b286ef"))))
- '(rainbow-delimiters-depth-9-face ((t nil)))
+ '(rainbow-delimiters-depth-3-face ((t (:foreground "#4d4d4c"))))
+ '(rainbow-delimiters-depth-4-face ((t (:foreground "#29d82c"))))
+ '(rainbow-delimiters-depth-5-face ((t (:foreground "#4d4d4c"))))
+ '(rainbow-delimiters-depth-6-face ((t (:foreground "#ff7063"))))
+ '(rainbow-delimiters-depth-7-face ((t (:foreground "#4d4d4c"))))
+ '(rainbow-delimiters-depth-8-face ((t (:foreground "#c02eff"))))
+ '(rainbow-delimiters-depth-9-face ((t (:foreground "#4d4d4c"))))
  '(whitespace-tab ((t (:foreground "#484848")))))
 
 ;; This custom variable caused table headers to be too tall
@@ -158,7 +159,9 @@
 ;; (load-theme 'sunburst t)
 
 (message "Loading package-mode...")
-(package-initialize)
+(if (or (version<= "24" emacs-version) (require 'package nil t))
+    (package-initialize)
+  (defun package-installed-p(pkg) nil))
 
 (when (package-installed-p 'web-mode)
   (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
@@ -243,6 +246,7 @@
 (defun my-go-mode-hook ()
   ;;(linum-mode)
   (require 'flycheck)
+  (make-local-variable 'flycheck-checker)
   (flycheck-select-checker 'go-gofmt)
   (set-variable 'flycheck-check-syntax-automatically '(save mode-enabled))
   (set-variable 'flycheck-highlighting-mode 'lines)
@@ -354,7 +358,8 @@ Key bindings:
         tab-width 8)
   (when (package-installed-p 'auto-complete-clang)
     (setq ac-sources '(ac-source-clang)))
-  (setq flycheck-checker 'c/c++-gcc)
+  (make-local-variable 'flycheck-checker)
+  (flycheck-select-checker 'c/c++-gcc)
   (add-hook
    'hack-local-variables-hook
    (lambda()
@@ -438,8 +443,6 @@ Key bindings:
 
 (add-hook 'haskell-mode-hook 'flymake-haskell-multi-load)
 
-(autoload 'javacc-mode "javacc-mode" nil t)
-
 ;; Modify C-x C-(+|-|0) to change the frame rather than the buffer
 (eval-after-load "face-remap"
   '(progn
@@ -480,8 +483,6 @@ See also `exchange-point-and-mark'."
 (unless window-system
   (if (string= (getenv "TERM") "xterm-256color")
       (xterm-mouse-mode t)))
-(add-to-list 'auto-mode-alist '("\\.jj\\'"  . javacc-mode))
-(add-to-list 'auto-mode-alist '("\\.jjt\\'" . javacc-mode))
 
 (add-hook
  'after-init-hook
@@ -523,23 +524,13 @@ See also `exchange-point-and-mark'."
      (when (package-installed-p 'auto-complete-clang)
        (require 'auto-complete-clang)
        (add-hook 'c-mode-common-hook
-                 (lambda() (setq ac-sources (cons 'ac-source-clang ac-sources))))))
+                 (lambda() (setq ac-sources (cons 'ac-source-clang ac-sources)))))
+     (message "Loading..."))
 
    (when (package-installed-p 'jedi)
      (add-hook 'python-mode-hook 'jedi:setup)
      (setq jedi:complete-on-dot t))
    
-   (when window-system
-     ;; (add-to-list 'default-frame-alist '(background-color . "black"))
-     ;; (add-to-list 'default-frame-alist '(foreground-color . "light gray"))
-     ;; (require 'color-theme)
-     ;; (autoload 'color-theme-sunburst "color-theme-sunburst" "Sunburst color theme" t)
-     ;; (eval-after-load "color-theme"
-     ;;   '(progn
-     ;;      (color-theme-initialize)
-     ;;      (color-theme-sunburst)))
-     ;;(load-theme 'sanityinc-tomorrow-day t)
-     )
    (when (package-installed-p 'multiple-cursors)
      (require 'multiple-cursors)
      (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
@@ -663,7 +654,9 @@ This must be bound to a button-down mouse event."
        :next-checkers ((error . erlang-dialyzer)))
      (defun find-plt()
        (or (car (file-expand-wildcards ".*[_\.]plt"))
-           (car (file-expand-wildcards "../.*[_\.]plt"))
+           (car (file-expand-wildcards "../.*[_\.]plt")) ;; src/*.erl
+           (car (file-expand-wildcards "../../.*[_\.]plt"))
+           (car (file-expand-wildcards "../../../.*[_\.]plt")) ;; deps/*/src/*.erl
            (and (file-exists-p "~/.dialyzer_plt") (file-truename "~/.dialyzer_plt"))))
      (defun can-dialyze-p() (and (flycheck-buffer-saved-p) (is-erlang-p) (find-plt)))
      (flycheck-define-checker erlang-dialyzer
@@ -693,16 +686,21 @@ This must be bound to a button-down mouse event."
         (setq erlang-argument-indent 2)
 
         ;; Syntax checking
-        (flycheck-select-checker 'erlang-better)
-        (flycheck-mode t)
+        (when (is-erlang-p)
+          (make-local-variable 'flycheck-checker)
+          (flycheck-select-checker 'erlang-better)
+          (flycheck-mode t))
 
         (setq erlang-electric-newline-criteria '())
         ;; if X, Y -> ...
-        (add-to-list 'erlang-electric-comma-criteria 'erlang-stop-when-at-any-guard)
-        (add-to-list 'erlang-electric-semicolon-criteria 'erlang-stop-when-at-if-guard)
-        (setq erlang-electric-commands '(erlang-electric-comma erlang-electric-semicolon)))))))
+        (add-to-list 'erlang-electric-comma-criteria
+                     'erlang-stop-when-at-any-guard)
+        (add-to-list 'erlang-electric-semicolon-criteria
+                     'erlang-stop-when-at-any-guard)
+        (setq erlang-electric-commands '(erlang-electric-comma
+                                         erlang-electric-semicolon)))))))
 
 ;; C-z catches me off guard even in terminals
 (global-set-key (kbd "C-z") 'undo)
-(unless window-system
-  (global-set-key (kbd "C-M-z") 'suspend-emacs))
+;; This makes C-x C-z do nothing under X
+(global-set-key (kbd "C-x C-z") 'suspend-emacs)

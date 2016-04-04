@@ -7,6 +7,7 @@ alias emacs="emacs -nw"
 alias less="less -SR"
 alias cp="cp -i"
 alias mv="mv -i"
+alias rm="rm --one-file-system"
 
 # set -x LC_ALL sv_se.UTF-8
 # set -x LANG sv_SE.UTF-8
@@ -37,6 +38,12 @@ set __fish_git_prompt_char_upstream_behind ' <'
 set __fish_git_prompt_char_upstream_diverged ' <>'
 set __fish_git_prompt_char_cleanstate ''
 set __fish_git_prompt_char_stateseparator ''
+
+# If in Emacs term, do not emit title ANSI codes, Emacs does not understand
+if echo $TERM | grep eterm
+   function fish_title
+   end
+end
 
 # Any machine-specific configuration goes in local.fish
 if [ -f ~/.config/fish/local.fish ]
