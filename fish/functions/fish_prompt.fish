@@ -1,3 +1,4 @@
+# -*- mode: shell-script -*-
 function fish_prompt --description 'Write out the prompt'
         set -l __status $status
 
@@ -40,7 +41,7 @@ function fish_prompt --description 'Write out the prompt'
 
             printf '%s%s ' "$__fish_prompt_red" $__fish_prompt_hostname
             if [ "x$NO_GIT_PROMPT" = "x" ]
-                printf '%s' (__fish_git_prompt "[%s] ")
+                printf '%s' (__fish_git_prompt "$__fish_git_prompt_format")
             end
 
             printf '%s%s%s' "$__fish_prompt_cwd" (prompt_pwd) "$__fish_prompt_normal"
