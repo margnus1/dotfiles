@@ -209,6 +209,9 @@
 
 (message "Loading...")
 
+;; Delete selection when typing or pressing DEL
+(delete-selection-mode t)
+
 (global-set-key (kbd "<f11>") 'scroll-lock-mode)
 (add-hook 'git-commit-mode-hook
           (lambda ()
@@ -391,7 +394,6 @@ Key bindings:
 (message "Loading...")
 (add-hook 'c++-mode-hook 'my-cedet-hook)
 (add-hook 'haskell-mode-hook 'flymake-haskell-multi-load)
-(autoload 'javacc-mode "javacc-mode" nil t)
 
 ;; (setq exec-path (cons "C:/Program Files/Git/bin/" exec-path))
 (when window-system
@@ -647,12 +649,12 @@ This must be bound to a button-down mouse event."
                   ;;(rrm/switch-to-multiple-cursors)
                   ;;(kill-ring-save start-point end-point)
                   ))
-           ))))
+           )))
+     (global-unset-key (kbd "M-<mouse-1>"))
+     (global-unset-key (kbd "M-<drag-mouse-1>"))
+     (global-set-key (kbd "M-<down-mouse-1>") 'mouse-drag-rectangle))
 
-   (global-unset-key (kbd "M-<mouse-1>"))
-   (global-unset-key (kbd "M-<drag-mouse-1>"))
-   (global-set-key (kbd "M-<down-mouse-1>") 'mouse-drag-rectangle)
-   ))
+   (message "Initialising...")))
 
 ;; TRAMP windows bug circumvention kludge
 ;;(set 'tramp-rsh-end-of-line "\r")
