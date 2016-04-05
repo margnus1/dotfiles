@@ -1,3 +1,4 @@
+# -*- mode: shell-script -*-
 alias cd..="cd .."
 alias dir="dir --color=auto -h"
 alias ls="ls --color=auto -h"
@@ -23,6 +24,7 @@ end
 set -x EDITOR emacs
 set -x BLOCKSIZE human-readable
 
+set __fish_git_prompt_format "[%s] "
 set __fish_git_prompt_color_prefix yellow --bold
 set __fish_git_prompt_color_suffix yellow --bold
 set __fish_git_prompt_color_branch green
@@ -48,4 +50,12 @@ end
 # Any machine-specific configuration goes in local.fish
 if [ -f ~/.config/fish/local.fish ]
     . ~/.config/fish/local.fish
+end
+
+# local.fish configurable variable
+if [ "x$LIGHT_GIT_PROMPT" != "x" ]
+    set __fish_git_prompt_format "[%s ?] "
+    set -e __fish_git_prompt_showdirtystate
+    set -e __fish_git_prompt_showuntrackedfiles
+    set -e __fish_git_prompt_show_informative_status
 end
