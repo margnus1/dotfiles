@@ -462,9 +462,14 @@ Key bindings:
             (format "~/.emacs.d/history-inferior-%s"
                     (process-name process)))
       (comint-read-input-ring)
-      (add-hook 'kill-buffer-hook #'comint-write-input-ring)
-      (add-hook 'kill-emacs-hook
-                (lambda () (with-current-buffer buf (comint-write-input-ring))))
+      (let ((global-hook (lambda () (when (buffer-live-p buf)
+                                      (with-current-buffer buf
+                                        (comint-write-input-ring))))))
+        (add-hook 'kill-emacs-hook global-hook)
+        (add-hook 'kill-buffer-hook
+                  (lambda ()
+                    (comint-write-input-ring)
+                    (remove-hook 'kill-emacs-hook global-hook))))
       (set-process-sentinel process #'comint-write-history-on-exit))))
 
 (add-hook 'gdb-mode-hook             #'turn-on-comint-history)
