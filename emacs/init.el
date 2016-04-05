@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -442,6 +443,30 @@ Key bindings:
 (add-hook 'c++-mode-hook 'my-cedet-hook)
 
 (add-hook 'haskell-mode-hook 'flymake-haskell-multi-load)
+
+;; https://oleksandrmanzyuk.wordpress.com/2011/10/23/a-persistent-command-history-in-emacs/
+(defun comint-write-history-on-exit (process event)
+  (comint-write-input-ring)
+  (let ((buf (process-buffer process)))
+    (when (buffer-live-p buf)
+      (with-current-buffer buf
+        (insert (format "\nProcess %s %s" process event))))))
+
+(defun turn-on-comint-history ()
+  (let* ((buf (current-buffer))
+         (process (get-buffer-process buf)))
+    (when process
+      (setq comint-input-ring-file-name
+            (format "~/.emacs.d/history-inferior-%s"
+                    (process-name process)))
+      (comint-read-input-ring)
+      (add-hook 'kill-buffer-hook #'comint-write-input-ring)
+      (add-hook 'kill-emacs-hook
+                (lambda () (with-current-buffer buf (comint-write-input-ring))))
+      (set-process-sentinel process #'comint-write-history-on-exit))))
+
+(add-hook 'gdb-mode-hook             #'turn-on-comint-history)
+(add-hook 'gdb-inferior-io-mode-hook #'turn-on-comint-history)
 
 ;; Modify C-x C-(+|-|0) to change the frame rather than the buffer
 (eval-after-load "face-remap"
