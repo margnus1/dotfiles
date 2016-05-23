@@ -42,7 +42,7 @@ set __fish_git_prompt_char_cleanstate ''
 set __fish_git_prompt_char_stateseparator ''
 
 # If in Emacs term, do not emit title ANSI codes, Emacs does not understand
-if echo $TERM | grep eterm
+if echo $TERM | grep eterm >/dev/null
    function fish_title
    end
 end
