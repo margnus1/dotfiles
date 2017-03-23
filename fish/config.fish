@@ -47,6 +47,10 @@ if echo $TERM | grep eterm >/dev/null
    end
 end
 
+function __fish_command_not_found_handler --on-event fish_command_not_found
+    __fish_default_command_not_found_handler $argv[1]
+end
+
 # Any machine-specific configuration goes in local.fish
 if [ -f ~/.config/fish/local.fish ]
     . ~/.config/fish/local.fish
