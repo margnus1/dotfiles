@@ -274,9 +274,6 @@
 (add-to-list 'auto-mode-alist '("\\.frag\\'" . glsl-mode))
 (add-to-list 'auto-mode-alist '("\\.geom\\'" . glsl-mode))
 
-(autoload 'llvm-mode "llvm-mode" nil t)
-(add-to-list 'auto-mode-alist '("\\.ll\\'" . llvm-mode))
-
 ;; (message "Loading sml-mode")
 (autoload 'sml-mode "sml-mode" "Major mode for editing SML." t)
 (autoload 'run-sml "sml-proc" "Run an inferior SML process." t)
@@ -328,7 +325,7 @@ Key bindings:
   ;;(setq flycheck-clang-args '("-std=c++11"))
         )
 
-(when (package-installed-p 'auto-complete)'
+(when (package-installed-p 'auto-complete)
   (defun my-keyboard-escape ()
     (interactive)
     (cond (ac-menu (keyboard-quit))
@@ -512,9 +509,9 @@ See also `exchange-point-and-mark'."
 	       (cua--rectangle-corner 0))))))
 (global-set-key (kbd "C-x C-x") 'sane-exchange-point-and-mark)
 
-(unless window-system
-  (if (string= (getenv "TERM") "xterm-256color")
-      (xterm-mouse-mode t)))
+(when (or (and (not window-system) (string= (getenv "TERM") "xterm-256color"))
+	  (daemonp))
+  (xterm-mouse-mode t))
 
 (add-hook
  'after-init-hook
@@ -526,7 +523,7 @@ See also `exchange-point-and-mark'."
      (require 'color-theme)
      (color-theme-initialize))
    (when (package-installed-p 'color-theme-sanityinc-tomorrow)
-     (color-theme-sanityinc-tomorrow-day))
+       (color-theme-sanityinc-tomorrow-day))
 
    ;; Disabled for Erlang
    ;; (when (package-installed-p 'smart-tabs-mode)
@@ -693,7 +690,7 @@ This must be bound to a button-down mouse event."
      (flycheck-define-checker erlang-dialyzer
        "An Erlang syntax checker using the Erlang interpreter."
        :command ("dialyzer" "-n" "--plt" (eval (find-plt))
-                 (option-list "-I" erlang-include-dirs) "--src" ".")
+                 (option-list "-I" erlang-include-dirs) "--src" source)
        :error-patterns
        ((warning line-start (file-name) ":" line ": " (message) line-end))
        :predicate can-dialyze-p
