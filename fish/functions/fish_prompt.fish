@@ -39,7 +39,12 @@ function fish_prompt --description 'Write out the prompt'
                 set -g __fish_prompt_cwd (set_color -o $fish_color_cwd)
             end
 
-            printf '%s%s ' "$__fish_prompt_red" $__fish_prompt_hostname
+	    if [ x(uname -m) != xx86_64 ]
+	       printf '%s%s ' "$__fish_prompt_blue" $__fish_prompt_hostname
+	    else
+	       printf '%s%s ' "$__fish_prompt_red" $__fish_prompt_hostname
+	    end
+
             if [ "x$NO_GIT_PROMPT" = "x" ]
                 printf '%s' (__fish_git_prompt "$__fish_git_prompt_format")
             end
