@@ -12,9 +12,15 @@ alias rm="rm --one-file-system"
 
 # set -x LC_ALL sv_se.UTF-8
 # set -x LANG sv_SE.UTF-8
-set -x LC_ALL en_GB.UTF-8
+# set -x LC_ALL en_GB.UTF-8
 set -x LANG en_GB.UTF-8
-set -x LANGUAGE "sv_SE:en_GB:en"
+set -x LANGUAGE "en_GB:en" # sv_SE:
+set -x LC_MEASUREMENT "sv_SE.UTF-8"
+set -x LC_MONETARY "sv_SE.UTF-8"
+set -x LC_NUMERIC "sv_SE.UTF-8"
+set -x LC_PAPER "sv_SE.UTF-8"
+set -x LC_TIME "sv_SE.UTF-8"
+set -x LC_COLLATE "sv_SE.UTF-8" # Or "C", maybe
 
 set FISH_CLIPBOARD_CMD "cat" # Stop that.
 # -Ux doesn't seem to work
