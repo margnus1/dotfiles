@@ -29,6 +29,7 @@ if [ "x$TERM" = "xxterm" ]
 end
 set -x EDITOR emacs
 set -x BLOCKSIZE human-readable
+set -x MANWIDTH 80
 
 set __fish_git_prompt_format "[%s] "
 set __fish_git_prompt_color_prefix yellow --bold
