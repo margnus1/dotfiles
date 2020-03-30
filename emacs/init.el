@@ -13,18 +13,21 @@
    (vector "#eaeaea" "#d54e53" "#b9ca4a" "#e7c547" "#7aa6da" "#c397d8" "#70c0b1" "#000000"))
  '(c-basic-offset 4)
  '(column-number-mode t)
+ '(company-lsp-enable-additional-text-edit nil)
  '(cua-enable-cua-keys nil)
  '(cua-mode t nil (cua-base))
  '(cua-remap-control-z nil)
+ '(custom-enabled-themes (quote (sanityinc-tomorrow-day)))
  '(custom-safe-themes
    (quote
-    ("70ef61cc7736345eb1d2d449a9251e683625ba977f53a4d7cdbd4b9e81425b5e" "1b8d67b43ff1723960eb5e0cba512a2c7a2ad544ddb2533a90101fd1852b426e" "82d2cac368ccdec2fcc7573f24c3f79654b78bf133096f9b40c20d97ec1d8016" "bb08c73af94ee74453c90422485b29e5643b73b05e8de029a6909af6a3fb3f58" "628278136f88aa1a151bb2d6c8a86bf2b7631fbea5f0f76cba2a0079cd910f7d" "06f0b439b62164c6f8f84fdda32b62fb50b6d00e8b01c2208e55543a6337433a" default)))
+    ("4cf3221feff536e2b3385209e9b9dc4c2e0818a69a1cdb4b522756bcdf4e00a4" "70ef61cc7736345eb1d2d449a9251e683625ba977f53a4d7cdbd4b9e81425b5e" "1b8d67b43ff1723960eb5e0cba512a2c7a2ad544ddb2533a90101fd1852b426e" "82d2cac368ccdec2fcc7573f24c3f79654b78bf133096f9b40c20d97ec1d8016" "bb08c73af94ee74453c90422485b29e5643b73b05e8de029a6909af6a3fb3f58" "628278136f88aa1a151bb2d6c8a86bf2b7631fbea5f0f76cba2a0079cd910f7d" "06f0b439b62164c6f8f84fdda32b62fb50b6d00e8b01c2208e55543a6337433a" default)))
  '(default-frame-alist (quote ((width . 96))))
  '(display-time-24hr-format t)
+ '(doc-view-resolution 200)
  '(edts-api-async-node-init t)
  '(edts-code-inhibit-dialyzer-on-compile t)
  '(edts-man-root "/home/magnus/.emacs.d/edts/doc/17.1")
- '(erlang-root-dir "/usr/lib/erlang/" t)
+ '(erlang-root-dir "/usr/lib/erlang/")
  '(face-font-family-alternatives
    (quote
     (("Impact" "Monospace" "courier" "fixed")
@@ -34,18 +37,27 @@
  '(fci-rule-color "#424242")
  '(fill-column 80)
  '(flycheck-checker-error-threshold 2000)
+ '(flycheck-color-mode-line-face-to-color (quote mode-line-buffer-id))
  '(flymake-info-line-regexp "^\\([iI]nfo\\|[nN]ote\\)")
  '(flymake-warning-predicate "^[wWvV]arning" t)
  '(flymake-warning-re "^[wWvV]arning" t)
  '(flyspell-default-dictionary "british")
+ '(gc-cons-percentage 0.3)
+ '(gc-cons-threshold 1600000)
  '(global-linum-mode t)
  '(global-whitespace-mode nil)
  '(haskell-mode-hook (quote (turn-on-haskell-indentation)) t)
  '(highlight-symbol-idle-delay 0.8)
  '(indent-tabs-mode nil)
  '(inhibit-startup-screen t)
+ '(lsp-keymap-prefix "s-c")
+ '(lsp-ui-sideline-show-diagnostics nil)
  '(markdown-open-command "xdg-open")
  '(mouse-drag-copy-region nil)
+ '(mouse-wheel-progressive-speed nil)
+ '(mouse-wheel-scroll-amount (quote (10 ((shift) . 1) ((control)))))
+ '(org-clock-idle-time 15)
+ '(org-clock-x11idle-program-name "/usr/bin/xprintidle")
  '(org-enforce-todo-dependencies t)
  '(package-archives
    (quote
@@ -54,7 +66,14 @@
      ("melpa" . "https://melpa.org/packages/"))))
  '(safe-local-variable-values
    (quote
-    ((whitespace-mode . t)
+    ((flyspell-mode . t)
+     (auto-fill-mode . t)
+     (auto-fill-mode t)
+     (erlang-include-dirs "../")
+     (adaptive-wrap-prefix-mode . t)
+     (eval visual-line-mode t)
+     (ws-trim-mode)
+     (whitespace-mode . t)
      (epiphany-buffer . t)
      (ac-clang-flags "-I/opt/adapteva/esdk.2014.11/tools/e-gnu.x86_64/bin/../lib/gcc/epiphany-elf/4.8.2/include" "-I/opt/adapteva/esdk.2014.11/tools/e-gnu.x86_64/bin/../lib/gcc/epiphany-elf/4.8.2/include-fixed" "-I/opt/adapteva/esdk.2014.11/tools/e-gnu.x86_64/bin/../lib/gcc/epiphany-elf/4.8.2/../../../../epiphany-elf/include")
      (ac-sources ac-source-clang)
@@ -65,12 +84,17 @@
      (erlang-include-dirs)
      (prolog-mode . t))))
  '(semantic-complete-inline-analyzer-idle-displayor-class (quote semantic-displayor-tooltip))
- '(semantic-mode t)
+ '(semantic-decoration-styles
+   (quote
+    (("semantic-decoration-on-includes" . t)
+     ("semantic-decoration-on-protected-members" . t)
+     ("semantic-decoration-on-private-members" . t)
+     ("semantic-tag-boundary"))))
+ '(semantic-mode nil)
  '(sentence-end-double-space nil)
  '(show-paren-mode t)
  '(show-trailing-whitespace nil)
- '(speedbar-load-hook (quote (visual-line-mode)))
- ;; '(tab-width 4)
+ '(speedbar-load-hook (quote (visual-line-mode)) t)
  '(tool-bar-mode nil)
  '(tool-bar-position (quote top))
  '(transient-mark-mode (quote (only . t)))
@@ -97,6 +121,7 @@
      (340 . "#e7c547")
      (360 . "#b9ca4a"))))
  '(vc-annotate-very-old-color nil)
+ '(vc-git-resolve-conflicts nil)
  '(whitespace-style (quote (face trailing space-before-tab empty tabs)))
  '(word-wrap t))
 (custom-set-faces
@@ -235,7 +260,8 @@
 (add-to-list 'command-switch-alist '("diff" . command-line-diff))
 
 (defun dont-highlight-crap-hook ()
-  (set-variable 'show-trailing-whitespace nil))
+  (set-variable 'show-trailing-whitespace nil)
+  (ws-trim-mode nil))
 (add-hook 'git-commit-mode-hook 'dont-highlight-crap-hook)
 (add-hook 'git-commit-mode-hook (lambda () (auto-fill-mode)))
 (add-hook 'diff-mode-hook 'dont-highlight-crap-hook)
@@ -274,12 +300,27 @@
 (add-to-list 'auto-mode-alist '("\\.frag\\'" . glsl-mode))
 (add-to-list 'auto-mode-alist '("\\.geom\\'" . glsl-mode))
 
+(defun my-git-commit-mode ()
+  (diff-mode)
+  (set-fill-column 72)
+  (flyspell-mode)
+  (auto-fill-mode)
+  (ws-trim-mode nil))
+(add-to-list 'auto-mode-alist '("COMMIT_EDITMSG\\'" . my-git-commit-mode))
+
+(autoload 'promela-mode "promela-mode" nil t)
+(add-to-list 'auto-mode-alist '("\\.pml\\'" . promela-mode))
+(defun my-promela-mode-hook ()
+  (setq-local promela-auto-insert-matching-delimiter nil))
+(add-hook 'promela-mode-hook 'my-promela-mode-hook)
+
 ;; (message "Loading sml-mode")
 (autoload 'sml-mode "sml-mode" "Major mode for editing SML." t)
 (autoload 'run-sml "sml-proc" "Run an inferior SML process." t)
 (add-to-list 'auto-mode-alist '("\\.\\(sml\\|sig\\)\\'" . sml-mode))
 
 (add-hook 'LaTeX-mode-hook 'auto-fill-mode)
+(add-hook 'LaTeX-mode-hook 'flyspell-mode)
 
 (modify-coding-system-alist 'file "\\.nfo\\'" 'cp850)
 ;; (load-file "/usr/share/emacs/24.3/lisp/cedet/cedet.elc")
@@ -319,12 +360,6 @@ Key bindings:
   nil
   :keymap my-flymake-minor-mode-map)
 
-(defun my-c++-mode-hook ()
-  (setq show-trailing-whitespace t)
-  (local-set-key "\C-c\C-v" 'flymake-goto-next-error)
-  ;;(setq flycheck-clang-args '("-std=c++11"))
-        )
-
 (when (package-installed-p 'auto-complete)
   (defun my-keyboard-escape ()
     (interactive)
@@ -339,11 +374,11 @@ Key bindings:
 ;; (add-to-list 'auto-mode-alist '("\\.\\(h\\|tcc\\)\\'" . c++-mode))
 ;;(add-hook 'c++-mode-hook 'flymake-mode)
 ;; (add-hook 'c++-mode-hook 'adaptive-wrap-prefix-mode)
-(add-hook 'c++-mode-hook 'flycheck-mode)
-(add-hook 'c++-mode-hook 'linum-mode)
+;; (add-hook 'c++-mode-hook 'flycheck-mode)
+;; (add-hook 'c++-mode-hook 'linum-mode)
 ;;(add-hook 'c++-mode-hook 'semantic-mode)
 ;; (add-hook 'c++-mode-hook 'irony-mode)
-(add-hook 'c++-mode-hook 'my-c++-mode-hook)
+;; (add-hook 'c++-mode-hook 'my-c++-mode-hook)
 ;;(add-hook 'c++-mode-hook 'my-flymake-minor-mode)
 
 (defvar epiphany-buffer nil "Set to t in Epiphany-specific buffers")
@@ -358,38 +393,73 @@ Key bindings:
         tab-width 8)
   (when (package-installed-p 'auto-complete-clang)
     (setq ac-sources '(ac-source-clang)))
-  (make-local-variable 'flycheck-checker)
-  (flycheck-select-checker 'c/c++-gcc)
+  ;; (make-local-variable 'flycheck-checker)
+  (when (package-installed-p 'lsp-mode)
+    (lsp-deferred)
+    (when (package-installed-p 'company)
+      (local-set-key (kbd "<C-tab>") 'company-complete)))
+  (flycheck-mode t)
+  (unless (package-installed-p 'lsp-mode)
+    (flycheck-select-checker 'c/c++-gcc))
+  (message (concat "Running my-c-mode-hook in " (buffer-file-name)))
+  (make-local-variable 'hack-local-variables-hook)
   (add-hook
    'hack-local-variables-hook
    (lambda()
-     (when epiphany-buffer
-       (when (package-installed-p 'auto-complete-clang)
-         (setq-local ac-clang-flags
-                     (append
-                      '("-I/opt/adapteva/esdk/tools/e-gnu.x86_64/lib/gcc/epiphany-elf/4.8.2/include"
-                        "-I/opt/adapteva/esdk/tools/e-gnu.x86_64/lib/gcc/epiphany-elf/4.8.2/include-fixed"
-                        "-I/opt/adapteva/esdk/tools/e-gnu.x86_64/epiphany-elf/include"
-                        "-D__epiphany__") ac-clang-flags)))
-       (setq-local flycheck-c/c++-gcc-executable "epiphany-elf-gcc"))
-     (unless epiphany-buffer
-       (when (package-installed-p 'auto-complete-clang)
-         (setq-local ac-clang-flags
-                     (append
-                      '("-I/usr/lib/gcc/arm-linux-gnueabihf/4.9.2/include"
-                        "-I/usr/lib/gcc/arm-linux-gnueabihf/4.9.2/include-fixed"
-                        "-I/usr/lib/gcc/arm-linux-gnueabihf/4.9.2/../../../../arm-linux-gnueabihf/include")
-                      ac-clang-flags)))
-       (setq-local flycheck-c/c++-gcc-executable "arm-linux-gnueabihf-gcc"))
-     (make-local-variable 'flycheck-checker)
-     (setq flycheck-checker 'c/c++-gcc)
+     ;; (message (concat "Hacking c-mode local variables in " (buffer-file-name)
+     ;;                  " (" (symbol-name major-mode) ")"))
+     ;; (when epiphany-buffer
+     ;;   (when (package-installed-p 'auto-complete-clang)
+     ;;     (setq-local ac-clang-flags
+     ;;                 (append
+     ;;                  '("-I/opt/adapteva/esdk/tools/e-gnu.x86_64/lib/gcc/epiphany-elf/4.8.2/include"
+     ;;                    "-I/opt/adapteva/esdk/tools/e-gnu.x86_64/lib/gcc/epiphany-elf/4.8.2/include-fixed"
+     ;;                    "-I/opt/adapteva/esdk/tools/e-gnu.x86_64/epiphany-elf/include"
+     ;;                    "-D__epiphany__") ac-clang-flags)))
+     ;;   (setq-local flycheck-c/c++-gcc-executable "epiphany-elf-gcc"))
+     ;; (unless epiphany-buffer
+     ;;   (when (package-installed-p 'auto-complete-clang)
+     ;;     (setq-local ac-clang-flags
+     ;;                 (append
+     ;;                  '("-I/usr/lib/gcc/arm-linux-gnueabihf/4.9.2/include"
+     ;;                    "-I/usr/lib/gcc/arm-linux-gnueabihf/4.9.2/include-fixed"
+     ;;                    "-I/usr/lib/gcc/arm-linux-gnueabihf/4.9.2/../../../../arm-linux-gnueabihf/include")
+     ;;                  ac-clang-flags)))
+     ;;   (setq-local flycheck-c/c++-gcc-executable "arm-linux-gnueabihf-gcc"))
+     ;; (make-local-variable 'flycheck-checker)
+     ;; (setq-local flycheck-checker 'c/c++-gcc)
      (when (package-installed-p 'auto-complete-clang)
        (setq-local ac-clang-flags (append ac-clang-flags extra-cc-flags)))
-     (setq-local flycheck-gcc-args (append flycheck-gcc-args extra-cc-flags))))
-  (flycheck-mode t))
+     (setq-local flycheck-gcc-args (append flycheck-gcc-args extra-cc-flags)))))
+(defun my-c++-mode-hook ()
+  (message (concat "Running my-c++-mode-hook in " (buffer-file-name)
+                    " (" (symbol-name major-mode) ")"))
+  (local-set-key "\C-c\C-v" 'flymake-goto-next-error)
+  ;;(setq flycheck-clang-args '("-std=c++11"))
+  (when (package-installed-p 'auto-complete-clang)
+    (setq ac-sources '(ac-source-clang)))
+  ;; (make-local-variable 'flycheck-checker)
+  (when (package-installed-p 'lsp-mode)
+    (lsp-deferred))
+  (flycheck-mode t)
+  (unless (package-installed-p 'lsp-mode)
+    (flycheck-select-checker 'c/c++-gcc))
+  (make-local-variable 'hack-local-variables-hook)
+  (add-hook
+   'hack-local-variables-hook
+   (lambda()
+     ;; (message (concat "Hacking c++-mode local variables in " (buffer-file-name)
+     ;;                  " (" (symbol-name major-mode) ")"))
+     ;; (make-local-variable 'flycheck-checker)
+     ;; (setq-local flycheck-checker 'c/c++-gcc)
+     (when (package-installed-p 'auto-complete-clang)
+       (setq-local ac-clang-flags (append ac-clang-flags extra-cc-flags)))
+     (setq-local flycheck-gcc-args (append flycheck-gcc-args extra-cc-flags)))))
 
 (message "Loading...")
+(add-hook 'c++-mode-hook 'my-c++-mode-hook)
 (add-hook 'c++-mode-hook 'my-cedet-hook)
+(add-to-list 'auto-mode-alist '("\\.tcc\\'" . c++-mode))
 (add-hook 'haskell-mode-hook 'flymake-haskell-multi-load)
 
 ;; (setq exec-path (cons "C:/Program Files/Git/bin/" exec-path))
@@ -410,7 +480,13 @@ Key bindings:
 ;;(add-to-list 'semantic-default-submodes 'global-semantic-idle-completions-mode)
 ;;(add-to-list 'semantic-default-submodes 'global-semantic-idle-summary-mode)
 ;;(add-to-list 'semantic-default-submodes 'global-semantic-stickyfunc-mode)
-(global-set-key (kbd "<f12>") 'semantic-ia-fast-jump)
+(global-set-key (kbd "<f12>") 'lsp-find-definition)
+(global-set-key (kbd "<f9>") 'lsp-find-declaration)
+
+(when (package-installed-p 'lsp-mode)
+  (with-eval-after-load 'lsp-mode
+    (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration)))
+(setq read-process-output-max (* 128 1024))
 
 (add-hook 'flymake-mode-hook
           (lambda ()
@@ -428,18 +504,19 @@ Key bindings:
 (add-to-list 'exec-path (concat (getenv "GOPATH") "/bin"))
 (defun my-go-hook ()
   (require 'flycheck)
+  (make-local-variable 'flycheck-checker)
   (flycheck-select-checker 'go-gofmt)
   (flycheck-mode 1))
 (add-hook 'go-mode-hook 'my-go-hook)
 
-(defun my-cedet-hook ()
-  ;; (semantic-load-enable-code-helpers)      ; Enable prototype help and smart completion
-  (local-set-key [(control return)] 'semantic-ia-complete-symbol)
-  ;; (local-set-key "\C-c?" 'semantic-ia-complete-symbol-menu)
-  (local-set-key (kbd "<C-tab>") 'semantic-complete-analyze-inline)
-  ;; (local-set-key "\C-cp" 'semantic-analyze-proto-impl-toggle)
-  )
-(add-hook 'c++-mode-hook 'my-cedet-hook)
+;; (defun my-cedet-hook ()
+;;   ;; (semantic-load-enable-code-helpers)      ; Enable prototype help and smart completion
+;;   (local-set-key [(control return)] 'semantic-ia-complete-symbol)
+;;   ;; (local-set-key "\C-c?" 'semantic-ia-complete-symbol-menu)
+;;   (local-set-key (kbd "<C-tab>") 'semantic-complete-analyze-inline)
+;;   ;; (local-set-key "\C-cp" 'semantic-analyze-proto-impl-toggle)
+;;   )
+;; (add-hook 'c++-mode-hook 'my-cedet-hook)
 
 (add-hook 'haskell-mode-hook 'flymake-haskell-multi-load)
 
@@ -479,9 +556,9 @@ Key bindings:
        (interactive "p")
        (let* ((lst (split-string (frame-parameter nil 'font) "-"))
               (oldstr (nth 7 lst))
-              (old (string-to-int oldstr))
+              (old (string-to-number oldstr))
               (new (+ old inc))
-              (newstr (int-to-string new)))
+              (newstr (number-to-string new)))
          (setcar (nthcdr 7 lst) newstr)
          (modify-frame-parameters nil `((font . ,(mapconcat 'identity lst "-"))))))
      (setq initial-frame-font (frame-parameter nil 'font))
@@ -512,6 +589,11 @@ See also `exchange-point-and-mark'."
 (when (or (and (not window-system) (string= (getenv "TERM") "xterm-256color"))
 	  (daemonp))
   (xterm-mouse-mode t))
+
+(add-hook 'org-mode-hook (lambda()
+                           (setq-local fill-column 72)
+                           (auto-fill-mode t)
+                           (flyspell-mode t)))
 
 (add-hook
  'after-init-hook
@@ -571,6 +653,9 @@ See also `exchange-point-and-mark'."
      (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
      (global-set-key (kbd "M-S-<down>") 'mc/mark-next-lines)
      (global-set-key (kbd "M-S-<up>") 'mc/mark-previous-lines)
+     (global-set-key (kbd "M-S-<down-mouse-1>") 'mc/add-cursor-on-click)
+     (defun do-nothing1(arg1) (interactive "e"))
+     (global-set-key (kbd "M-S-<mouse-1>") 'do-nothing1)
 
      ;; M-drag for mc rectangle selection
      ;; Without delete-selection-mode, but with CUA, only the selection on the line
@@ -673,6 +758,7 @@ This must be bound to a button-down mouse event."
      (flycheck-define-checker erlang-better
        "An Erlang syntax checker using the Erlang interpreter."
        :command ("erlc" (option-list "-I" erlang-include-dirs)
+                 (eval flycheck-erlang-args)
                  "-o" temporary-directory "-Wall" source)
        :error-patterns
        ((warning line-start (file-name) ":" line ": Warning:" (message) line-end)
@@ -690,7 +776,9 @@ This must be bound to a button-down mouse event."
      (flycheck-define-checker erlang-dialyzer
        "An Erlang syntax checker using the Erlang interpreter."
        :command ("dialyzer" "-n" "--plt" (eval (find-plt))
-                 (option-list "-I" erlang-include-dirs) "--src" source)
+                 (option-list "-I" erlang-include-dirs)
+                 (eval flycheck-erlang-args)
+                 "--src" source)
        :error-patterns
        ((warning line-start (file-name) ":" line ": " (message) line-end))
        :predicate can-dialyze-p
@@ -698,6 +786,8 @@ This must be bound to a button-down mouse event."
      (flycheck-def-option-var erlang-include-dirs
          (list) erlang-better
        "The relative paths where erlc can find include files")
+     (flycheck-def-args-var flycheck-erlang-args erlang-better)
+     (put 'flycheck-erlang-args 'safe-local-variable #'listp)
      (add-to-list 'flycheck-checkers 'erlang-dialyzer 'erlang-better)
 
      (defun erlang-stop-when-at-any-guard ()
@@ -708,7 +798,7 @@ This must be bound to a button-down mouse event."
      (add-hook
       'erlang-mode-hook
       (lambda ()
-        (setq indent-tabs-mode t)
+        ;; (setq indent-tabs-mode t)
         (setq erlang-indent-level 4)
         (setq erlang-indent-guard 2)
         (setq erlang-argument-indent 2)
@@ -726,9 +816,27 @@ This must be bound to a button-down mouse event."
         (add-to-list 'erlang-electric-semicolon-criteria
                      'erlang-stop-when-at-any-guard)
         (setq erlang-electric-commands '(erlang-electric-comma
-                                         erlang-electric-semicolon)))))))
+                                         erlang-electric-semicolon))))
+     (flycheck-define-checker promela
+       "An Promela syntax checker using SPIN."
+       :command ("spin" "-u1" source)
+       :error-patterns
+       ((warning line-start "spin: " (file-name) ":" line ", Warning: " (message) line-end)
+        (error line-start "spin: " (file-name) ":" line ", Error: " (message) line-end))
+       :modes promela-mode)
+     (add-to-list 'flycheck-checkers 'promela)
+     (add-hook 'promela-mode-hook '(lambda ()
+                                     (flycheck-mode t))))))
 
 ;; C-z catches me off guard even in terminals
 (global-set-key (kbd "C-z") 'undo)
 ;; This makes C-x C-z do nothing under X
 (global-set-key (kbd "C-x C-z") 'suspend-emacs)
+(global-set-key (kbd "M-n") 'forward-paragraph)
+(global-set-key (kbd "M-p") 'backward-paragraph)
+
+;; Machine-local init
+(load "site-init" t)
+(put 'downcase-region 'disabled nil)
+(put 'upcase-region 'disabled nil)
+(put 'narrow-to-region 'disabled nil)
